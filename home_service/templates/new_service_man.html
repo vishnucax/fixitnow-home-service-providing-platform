@@ -1,0 +1,300 @@
+{% extends 'admin_navigation.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    .service-man-container {
+        padding: 2rem;
+        background-color: #f9f9ff;
+    }
+    
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .page-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #2c3e50;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .page-title:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        border-radius: 2px;
+    }
+    
+    .view-all-btn {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 0.6rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        text-decoration: none;
+    }
+    
+    .view-all-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        color: white;
+    }
+    
+    .view-all-btn i {
+        margin-right: 0.5rem;
+    }
+    
+    .service-man-table {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .service-man-table thead {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        color: white;
+    }
+    
+    .service-man-table th {
+        padding: 1rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .service-man-table td {
+        padding: 1rem;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .service-man-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .status-badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 50px;
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .status-pending {
+        background: rgba(255, 193, 7, 0.1);
+        color: #ffc107;
+    }
+    
+    .action-btn {
+        border: none;
+        border-radius: 50px;
+        padding: 0.5rem 1rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .assign-btn {
+        background: rgba(13, 110, 253, 0.1);
+        color: #0d6efd;
+    }
+    
+    .assign-btn:hover {
+        background: rgba(13, 110, 253, 0.2);
+    }
+    
+    .view-btn {
+        background: rgba(25, 135, 84, 0.1);
+        color: #198754;
+    }
+    
+    .view-btn:hover {
+        background: rgba(25, 135, 84, 0.2);
+    }
+    
+    .table-icon {
+        font-size: 1rem;
+        margin-right: 0.3rem;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+    
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: #dee2e6;
+    }
+
+    /* Modal Styles */
+    .modal-content {
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    
+    .modal-header {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        color: white;
+        border-radius: 12px 12px 0 0;
+        border: none;
+    }
+    
+    .modal-body {
+        padding: 2rem;
+    }
+    
+    .form-select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+    }
+    
+    .submit-btn {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+</style>
+
+<div class="service-man-container">
+    <div class="header-container">
+        <div>
+            <h1 class="page-title">New Service Professionals</h1>
+            <p class="text-muted">Manage newly registered service professionals awaiting approval</p>
+        </div>
+        <a href="{% url 'all_service_man' %}" class="view-all-btn">
+            <i class="fas fa-users"></i> View All Professionals
+        </a>
+    </div>
+    
+    <div class="table-responsive">
+        <table class="table service-man-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Contact</th>
+                    <th>Service</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if ser %}
+                {% for i in ser %}
+                <tr>
+                    <td>{{forloop.counter}}</td>
+                    <td>{{i.user.first_name}} {{i.user.last_name}}</td>
+                    <td>{{i.user.email}}</td>
+                    <td>{{i.contact}}</td>
+                    <td>{{i.service_name}}</td>
+                    <td>
+                        <span class="status-badge status-pending">
+                            {{i.status.status}}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="d-flex gap-2">
+                            <button class="action-btn assign-btn" data-bs-toggle="modal" data-bs-target="#statusModal{{i.id}}">
+                                <i class="fas fa-user-check table-icon"></i>
+                                Assign Status
+                            </button>
+                            <a href="{% url 'service_man_detail' i.id %}" class="action-btn view-btn">
+                                <i class="fas fa-eye table-icon"></i>
+                                View
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Status Modal for each row -->
+                <div class="modal fade" id="statusModal{{i.id}}" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Change Status</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{% url 'status' i.id %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="id" value="{{i.id}}">
+                                    <select name="stat" class="form-select">
+                                        <option value="Accept">Accept</option>
+                                        <option value="Reject">Reject</option>
+                                    </select>
+                                    <button type="submit" class="submit-btn">
+                                        Update Status
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="7">
+                        <div class="empty-state">
+                            <i class="fas fa-user-tie"></i>
+                            <h4>No New Service Professionals</h4>
+                            <p>There are currently no new service professionals awaiting approval</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+{% if error %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        alert('Status updated successfully');
+        window.location = "{% url 'new_service_man' %}";
+    });
+</script>
+{% endif %}
+
+<!-- Bootstrap JS Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+{% endblock %}

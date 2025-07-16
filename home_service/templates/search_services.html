@@ -1,0 +1,252 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    :root {
+        --primary: #5f72be;
+        --secondary: #9921e8;
+        --accent: #00cec9;
+        --white: #ffffff;
+        --light: #f8f9fa;
+        --dark: #2d3436;
+        --gray: #dfe6e9;
+    }
+    
+    .service-search-container {
+        margin-top: 5%;
+        padding: 2rem;
+    }
+    
+    .page-title {
+        font-family: 'Poppins', sans-serif;
+        font-weight: 700;
+        color: var(--dark);
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+    
+    .page-title span.highlight {
+        color: var(--secondary);
+        font-weight: 800;
+    }
+    
+    .page-title:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        border-radius: 2px;
+    }
+    
+    .no-results-container {
+        text-align: center;
+        padding: 3rem;
+        background-color: var(--white);
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .no-results-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    
+    .service-provider-card {
+        background: var(--white);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .service-provider-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+    
+    .provider-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--light);
+        margin: 0 auto;
+        display: block;
+    }
+    
+    .provider-details {
+        padding-left: 1.5rem;
+    }
+    
+    .provider-name {
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+    }
+    
+    .provider-info {
+        list-style: none;
+        padding: 0;
+        margin: 1rem 0;
+    }
+    
+    .provider-info li {
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+        display: flex;
+        align-items: center;
+    }
+    
+    .provider-info i {
+        color: var(--primary);
+        margin-right: 0.5rem;
+        width: 20px;
+        text-align: center;
+    }
+    
+    .id-card-container {
+        text-align: center;
+    }
+    
+    .id-card-image {
+        max-width: 100%;
+        height: auto;
+        border-radius: 8px;
+        border: 1px solid var(--gray);
+    }
+    
+    .id-type {
+        margin-top: 0.5rem;
+        font-weight: 500;
+        color: var(--primary);
+    }
+    
+    .book-btn {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1rem;
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .book-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(95, 114, 190, 0.3);
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .service-search-container {
+            margin-top: 15%;
+            padding: 1rem;
+        }
+        
+        .provider-image {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 1rem;
+        }
+        
+        .provider-details {
+            padding-left: 0;
+            text-align: center;
+            margin-top: 1rem;
+        }
+        
+        .provider-info {
+            text-align: left;
+        }
+        
+        .book-btn {
+            margin: 1rem auto;
+        }
+    }
+</style>
+
+<div class="service-search-container">
+    <h2 class="page-title">
+        Search Results for 
+        <span class="highlight">{{service}}</span>
+    </h2>
+    
+    <div class="container-fluid">
+        {% if not error %}
+        <div class="row">
+            <div class="col-md-12 no-results-container">
+                <img src="{% static 'images/pro123.jpg' %}" class="no-results-image" alt="No results found">
+                <h4 style="font-weight:600;color:var(--dark);margin-bottom:1.5rem">
+                    No service providers found for your search
+                </h4>
+                <p class="text-muted">
+                    Try searching with different keywords or browse our services
+                </p>
+                <a href="{% url 'service' %}" class="btn btn-primary mt-3">
+                    Browse All Services
+                </a>
+            </div>
+        </div>
+        {% else %}
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                {% for i in order %}
+                <div class="col-lg-8 col-md-10">
+                    <div class="service-provider-card">
+                        <div class="row align-items-center">
+                            <div class="col-md-3 text-center">
+                                <img src="{{i.image.url}}" class="provider-image" alt="{{i.user.first_name}}">
+                            </div>
+                            <div class="col-md-5 provider-details">
+                                <h4 class="provider-name">
+                                    {{i.user.first_name}} {{i.user.last_name}}
+                                </h4>
+                                <ul class="provider-info">
+                                    <li>
+                                        <i class="fas fa-phone"></i> {{i.contact}}
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-map-marker-alt"></i> {{i.address}}
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-briefcase"></i> {{i.service_name}}
+                                    </li>
+                                    <li>
+                                        <i class="fas fa-star"></i> {{i.experience}} years experience
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4 id-card-container">
+                                <img src="{{i.id_card.url}}" class="id-card-image" alt="ID Card">
+                                <div class="id-type">{{i.id_type}}</div>
+                                <a href="{% url 'booking' i.id %}" class="book-btn">
+                                    <i class="fas fa-calendar-check mr-2"></i> Book Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

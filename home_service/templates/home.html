@@ -1,0 +1,805 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+            --secondary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            --dark-color: #2c3e50;
+            --light-color: #f8f9fa;
+        }
+        
+        /* Global Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .section-title {
+            position: relative;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -15px;
+            width: 80px;
+            height: 4px;
+            background: white;
+            border-radius: 2px;
+        }
+        
+        /* Hero Section */
+        .hero-section {
+            padding: 120px 0;
+            background-color: #9921e8;
+            background-image: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, rgba(106, 17, 203, 0.1) 0%, rgba(37, 117, 252, 0.1) 100%);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            z-index: 0;
+        }
+        
+        .hero-image-container {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-image-container img {
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+        
+        .card1, .card2 {
+            width: 110px;
+            border-radius: 12px;
+            border: none;
+            z-index: 2;
+            background: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .card1 {
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        .card2 {
+            animation: float 4s ease-in-out infinite 1s;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); }
+            50% { transform: translateY(-10px) translateX(5px); }
+            100% { transform: translateY(0) translateX(0); }
+        }
+        
+        /* Services Section */
+        .services-section {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .service-card {
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            background: white;
+            height: 100%;
+            position: relative;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(106, 17, 203, 0.15);
+        }
+        
+        .image-container {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+        }
+        
+        .service-image {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .service-card:hover .service-image {
+            transform: scale(1.05);
+        }
+        
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3));
+        }
+        
+        .service-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: white;
+            color: #5f72be;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .service-content {
+            padding: 20px;
+        }
+        
+        .service-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+        
+        .service-description {
+            color: #6c757d;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .service-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        /* About Section */
+        .about-section {
+            padding: 100px 0;
+            background-color: #9921e8;
+            background-image: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .about-img {
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            border: 3px solid rgba(255,255,255,0.3);
+            transition: transform 0.3s ease;
+        }
+        
+        .about-img:hover {
+            transform: scale(1.02);
+        }
+        
+        .feature-icon {
+            font-size: 24px;
+            color: #ffffff;
+            margin-right: 15px;
+        }
+        
+        /* Reviews Section */
+        .reviews-section {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .review-card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            height: 100%;
+            background: white;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .review-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(106, 17, 203, 0.1);
+        }
+        
+        .review-header {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: rgba(106, 17, 203, 0.05);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .review-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 15px;
+            border: 2px solid rgba(106, 17, 203, 0.2);
+        }
+        
+        .review-user {
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0;
+        }
+        
+        .review-date {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        
+        .review-body {
+            padding: 20px;
+        }
+        
+        .review-text {
+            color: #495057;
+            font-style: italic;
+            position: relative;
+            padding-left: 20px;
+        }
+        
+        .review-text:before {
+            content: '"';
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 2rem;
+            color: rgba(106, 17, 203, 0.2);
+            line-height: 1;
+        }
+        
+        .review-rating {
+            display: flex;
+            align-items: center;
+            margin-top: 15px;
+        }
+        
+        /* Contact Section */
+        .contact-section {
+            padding: 80px 0;
+            background-color: #9921e8;
+            background-image: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+            color: white;
+        }
+        
+        .contact-form {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        /* Buttons */
+        .btn-primary1 {
+            background: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            padding: 12px 30px;
+            transition: all 0.3s ease;
+            color: #5f72be;
+        }
+
+
+        .btn-primary {
+            background: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            padding: 12px 30px;
+            transition: all 0.3s ease;
+            color: #5f72be;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            background: white;
+            color: #5f72be;
+        }
+        
+        .btn-outline-light {
+            border-width: 2px;
+            font-weight: 500;
+            border-radius: 50px;
+            padding: 12px 30px;
+            transition: all 0.3s ease;
+            color: white;
+            border-color: white;
+        }
+        
+        .btn-outline-light:hover {
+            background-color: rgba(255,255,255,0.2);
+            transform: translateY(-3px);
+            color: white;
+        }
+        
+        .btn-gradient {
+            background: white;
+            color: #5f72be;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            color: #5f72be;
+            background: white;
+        }
+        
+        /* Text Styles */
+        .text-gradient {
+            color: white;
+        }
+        
+        /* Badges */
+        .badge-gradient {
+            background: white;
+            color: #5f72be;
+            border-radius: 50px;
+            padding: 5px 15px;
+            font-weight: 600;
+        }
+        
+        /* Rating Stars */
+        .rating i {
+            margin-right: 3px;
+            color: #ffc107;
+        }
+        
+        /* Form Controls */
+        .form-control {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+        }
+        
+        .form-control:focus {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-color: rgba(255,255,255,0.5);
+            box-shadow: 0 0 0 0.25rem rgba(255,255,255,0.1);
+        }
+        
+        .form-control::placeholder {
+            color: rgba(255,255,255,0.7);
+        }
+        
+        /* Card Text Colors */
+        .card-title, .card-text {
+            color: var(--dark-color);
+        }
+        
+        .text-muted {
+            color: rgba(255,255,255,0.7) !important;
+        }
+        
+        /* White background sections title colors */
+        .services-section .section-title,
+        .reviews-section .section-title {
+            color: var(--dark-color);
+        }
+        
+        .services-section .section-title:after,
+        .reviews-section .section-title:after {
+            background: var(--primary-gradient);
+        }
+    </style>
+</head>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <h1 class="display-4 fw-bold mb-4">Your Home Repairs, <span class="text-gradient">Simplified</span></h1>
+                <p class="lead mb-5">Book trusted professionals for all your home service needs with just a few taps. Quality service, guaranteed.</p>
+                
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="#services" class="btn btn-primary1">
+                        <i class="fas fa-tools me-2"></i> Explore Services
+                    </a>
+                    
+                </div>
+                
+                <div class="d-flex align-items-center mt-5">
+                    
+                    <div class="ms-3">
+                        <div class="rating small">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <p class="small mb-0">Trusted by 10,000+ homeowners</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="hero-image-container position-relative">
+                    <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" class="img-fluid" alt="Home service professional">
+                    <div class="card card1 position-absolute top-0 start-0 translate-middle">
+                        <div class="card-body p-3 text-center">
+                            <i class="fas fa-check-circle text-success fs-3 mb-2"></i>
+                            <h6 class="mb-0">Verified <br>Service <br> Providers</h6>
+                        </div>
+                    </div>
+                    <div class="card card2 position-absolute bottom-0 end-0 translate-middle">
+                        <div class="card-body p-3 text-center">
+                            <i class="fas fa-clock text-primary fs-3 mb-2"></i>
+                            <h6 class="mb-0">Quick <br>Response</h6>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="services-section" id="services">
+    <div class="container">
+        <h2 class="section-title text-center">Our Services</h2>
+        
+        <div class="row g-4">
+            {% for i in ser %}
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card service-card">
+                    <div class="image-container">
+                        <img class="service-image" src="{{i.image.url}}" alt="{{i.category}}">
+                        <div class="image-overlay"></div>
+                        <span class="service-badge">Popular</span>
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-title">{{i.category}}</h3>
+                        <p class="service-description">{{i.desc|truncatewords:20}}</p>
+                        <div class="service-footer">
+                            <div class="rating">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star-half-alt text-warning"></i>
+                                <span class="ms-2">4.8</span>
+                            </div>
+                            <a href="{% url 'explore_services' i.id %}" class="btn btn-gradient px-3 py-1">
+                                <i class="fas fa-arrow-right me-1"></i>Explore
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section class="about-section" id="about">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="FixItNow Service Professionals" class="img-fluid about-img">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="section-title">About FixItNow</h2>
+                <p class="lead">Your trusted home service solution provider</p>
+                <p>FixItNow connects homeowners with reliable, vetted professionals for all home maintenance and repair needs. Founded in 2020, we've served over 50,000 happy customers across the country.</p>
+                
+                <div class="mt-4">
+                    <div class="d-flex mb-3">
+                        <div class="feature-icon">✓</div>
+                        <div>
+                            <h5>Trusted Professionals</h5>
+                            <p class="mb-0">All our service providers are background-checked and rated by customers.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex mb-3">
+                        <div class="feature-icon">✓</div>
+                        <div>
+                            <h5>Quick Service</h5>
+                            <p class="mb-0">Get help within hours, not days. We prioritize your convenience.</p>
+                        </div>
+                    </div>
+                    <div class="d-flex">
+                        <div class="feature-icon">✓</div>
+                        <div>
+                            <h5>Transparent Pricing</h5>
+                            <p class="mb-0">No hidden fees. Know the cost before booking any service.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Reviews Section -->
+<!-- Reviews Section -->
+<section class="reviews-section">
+    <div class="container">
+        <h2 class="section-title text-center">Customer Reviews</h2>
+        
+        {% if reviews %}
+        <div class="row g-4">
+            {% for review in reviews %}
+            <div class="col-md-4">
+                <div class="review-card">
+                    <div class="review-content">
+                        <div class="review-meta">
+                            <div class="reviewer-info">
+                                <h5 class="review-user">{{ review.user.username }}</h5>
+                                <div class="review-date">{{ review.created_at|date:"M d, Y" }}</div>
+                            </div>
+                            <div class="rating">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= review.rating %}
+                                        <i class="fas fa-star"></i>
+                                    {% else %}
+                                        <i class="far fa-star"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="review-text-container">
+                            <i class="fas fa-quote-left quote-icon"></i>
+                            <p class="review-text">{{ review.comment }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+            <div class="card review-card">
+                <div class="card-body p-4 text-center">
+                    <i class="far fa-comment-dots fa-3x mb-3" style="color: #6a11cb;"></i>
+                    <h5 class="card-title">No Reviews Yet</h5>
+                    <p class="card-text">Be the first to share your experience with us!</p>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'website_reviews' %}" class="btn btn-gradient">Write a Review</a>
+                    {% else %}
+                        <a href="{% url 'login' %}?next={% url 'website_reviews' %}" class="btn btn-gradient">Login to Review</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="text-center mt-5">
+            {% if user.is_authenticated %}
+            <a class="btn btn-gradient px-4" href="{% url 'website_reviews' %}">
+                <i class="fas fa-pen me-2"></i>Submit Review
+            </a>
+            {% else %}
+            <a class="btn btn-gradient px-4" href="{% url 'login' %}?next={% url 'website_reviews' %}">
+                <i class="fas fa-sign-in-alt me-2"></i>Login to Review
+            </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Reviews Section Styling */
+    .reviews-section {
+        padding: 80px 0;
+        background-color: white;
+    }
+    
+    .review-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        height: 100%;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .review-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(106, 17, 203, 0.1);
+    }
+    
+    .review-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+    
+    .reviewer-info {
+        flex: 1;
+    }
+    
+    .review-user {
+        font-weight: 600;
+        color: var(--dark-color);
+        margin-bottom: 5px;
+    }
+    
+    .review-date {
+        font-size: 0.85rem;
+        color: #6c757d;
+    }
+    
+    .rating {
+        margin-left: 15px;
+    }
+    
+    .rating i {
+        color: #ffc107;
+        font-size: 0.9rem;
+    }
+    
+    .review-text-container {
+        position: relative;
+        padding-left: 25px;
+    }
+    
+    .quote-icon {
+        position: absolute;
+        left: 0;
+        top: 0;
+        color: rgba(106, 17, 203, 0.1);
+        font-size: 1.5rem;
+    }
+    
+    .review-text {
+        color: #495057;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 0;
+    }
+</style>
+
+<!-- Contact Section -->
+<!-- Contact Section -->
+<section class="contact-section" id="contact">
+    <div class="container">
+        <h2 class="section-title text-center">Contact Us</h2>
+        
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="contact-form">
+                    <form method="post" id="contactForm" novalidate>
+                        {% csrf_token %}
+                        <input type="hidden" name="contact_form" value="1">
+
+                        <div class="mb-3">
+                            <label for="contactusername" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="contactusername" name="name" 
+                                   required pattern="[A-Za-z ]+" 
+                                   title="Please enter only letters (no numbers or special characters)">
+                            <div class="invalid-feedback">
+                                Please provide a valid name (letters only).
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contactemail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="contactemail" name="email" 
+                                   required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                                   title="Please enter a valid email address">
+                            <div class="invalid-feedback">
+                                Please provide a valid email address.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="contactcomment" class="form-label">Your Message</label>
+                            <textarea class="form-control" rows="5" id="contactcomment" name="message" required></textarea>
+                            <div class="invalid-feedback">
+                                Please provide your message.
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Send Message</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="card h-100" style="background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);">
+                    <div class="card-body p-0">
+                        <div class="ratio ratio-16x9">
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3929.0019194209796!2d76.29988407462668!3d9.998406390122778!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b080d5454306327%3A0x6a6b0a342d0b4297!2sLuminar%20Technolab!5e0!3m2!1sen!2sin!4v1712561123456!5m2!1sen!2sin"
+                                allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+                                style="border:0; border-radius: 8px; height: 460px;">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Form validation
+    (function() {
+        'use strict';
+        
+        // Show alert once if contact form was submitted
+        window.addEventListener("load", function () {
+            {% if contact_submitted %}
+            if (!sessionStorage.getItem("contactAlertShown")) {
+                alert("Message sent successfully. We will contact you soon.");
+                sessionStorage.setItem("contactAlertShown", "true");
+            }
+            {% endif %}
+            
+            // Get the form we want to add validation to
+            const form = document.getElementById('contactForm');
+            
+            // Real-time validation for name field (only letters)
+            const nameInput = document.getElementById('contactusername');
+            nameInput.addEventListener('input', function() {
+                this.value = this.value.replace(/[^A-Za-z ]/g, '');
+            });
+            
+            // Validate form on submit
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+
+<script>
+    // Show alert once if contact form was submitted
+    window.addEventListener("load", function () {
+        {% if contact_submitted %}
+        if (!sessionStorage.getItem("contactAlertShown")) {
+            alert("Message sent successfully. We will contact you soon.");
+            sessionStorage.setItem("contactAlertShown", "true");
+        }
+        {% endif %}
+    });
+</script>
+
+{% endblock %}

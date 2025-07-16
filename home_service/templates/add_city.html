@@ -1,0 +1,239 @@
+{% extends 'admin_navigation.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    .city-management-container {
+        padding: 2rem;
+        background-color: #f8f9fa;
+    }
+    
+    .city-card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        overflow: hidden;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .city-header {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .city-title {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 0;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .city-title:after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -10px;
+        width: 50px;
+        height: 3px;
+        background: rgba(255,255,255,0.7);
+        border-radius: 3px;
+    }
+    
+    .city-body {
+        padding: 2rem;
+        background: white;
+    }
+    
+    .city-form {
+        margin-top: 1rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #9921e8;
+        box-shadow: 0 0 0 3px rgba(153,33,232,0.1);
+    }
+    
+    .btn-container {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .btn {
+        border: none;
+        border-radius: 50px;
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+        width: 100%;
+        transition: all 0.3s ease;
+        text-align: center;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+    }
+    
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    }
+    
+    .btn i {
+        margin-right: 8px;
+    }
+    
+    .input-icon {
+        position: relative;
+    }
+    
+    .input-icon i {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #9921e8;
+    }
+    
+    .input-icon input {
+        padding-left: 45px;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .city-body {
+            padding: 1.5rem;
+        }
+        
+        .city-title {
+            font-size: 1.5rem;
+        }
+        
+        .btn-container {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="city-management-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="city-card">
+                    <div class="city-header">
+                        <h2 class="city-title">
+                            <i class="fas fa-city mr-2"></i>Add New City
+                        </h2>
+                    </div>
+                    
+                    <div class="city-body">
+                        <div class="city-form">
+                            <form method="post" id="addCityForm">
+                                {% csrf_token %}
+                                
+                                <div class="form-group">
+                                    <label for="cityName" class="form-label">City Name</label>
+                                    <div class="input-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="cityName" 
+                                               name="ci" 
+                                               placeholder="Enter city name (e.g., New York)" 
+                                               required
+                                               pattern="[A-Za-z\s]+"
+                                               title="Only letters and spaces allowed">
+                                    </div>
+                                </div>
+                                
+                                <div class="btn-container">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-plus-circle"></i> Add City
+                                    </button>
+                                    <a href="{% url 'view_city' %}" class="btn btn-secondary">
+                                        <i class="fas fa-list"></i> View Cities
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if error %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            title: 'Success!',
+            text: 'City added successfully',
+            icon: 'success',
+            confirmButtonColor: '#9921e8',
+            confirmButtonText: 'Continue'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location = "{% url 'view_city' %}";
+            }
+        });
+    });
+</script>
+{% endif %}
+
+<script>
+    // Form validation
+    const form = document.getElementById('addCityForm');
+    
+    form.addEventListener('submit', function(e) {
+        const cityInput = document.getElementById('cityName');
+        const regex = /^[A-Za-z\s]+$/;
+        
+        if (!regex.test(cityInput.value)) {
+            e.preventDefault();
+            cityInput.focus();
+            Swal.fire({
+                title: 'Invalid Input',
+                text: 'City name should only contain letters and spaces',
+                icon: 'error',
+                confirmButtonColor: '#9921e8'
+            });
+        }
+    });
+</script>
+
+{% endblock %}

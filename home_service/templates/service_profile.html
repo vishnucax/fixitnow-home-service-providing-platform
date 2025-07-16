@@ -1,0 +1,227 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    body {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    .profile-container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 1em;
+        margin-top: 8em;
+        margin-bottom: 5em;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        border: none;
+        overflow: hidden;
+    }
+    
+    .profile-header {
+        font-weight: 700;
+        color: #2c3e50;
+        margin-bottom: 1.5rem;
+        position: relative;
+        padding-bottom: 10px;
+    }
+    
+    .profile-header:after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: 0;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        border-radius: 2px;
+    }
+    
+    .divider {
+        border-left: 2px solid rgba(0,0,0,0.1);
+        height: auto;
+    }
+    
+    .profile-section {
+        padding: 2em;
+    }
+    
+    .profile-row {
+        margin-bottom: 1.5em;
+        padding-bottom: 1em;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    
+    .label {
+        font-weight: 600;
+        color: #5f72be;
+    }
+    
+    .value {
+        font-weight: 500;
+        color: #2c3e50;
+    }
+    
+    .profile-img {
+        width: 120px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border: 2px solid white;
+    }
+    
+    .id-card-img {
+        width: 200px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border: 2px solid white;
+    }
+    
+    .edit-btn {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        color: white;
+        border: none;
+        padding: 10px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        margin-bottom: 2em;
+    }
+    
+    .edit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        color: white;
+    }
+    
+    .not-available {
+        color: #6c757d;
+        font-style: italic;
+    }
+    
+    @media (max-width: 768px) {
+        .profile-container {
+            margin-top: 6em;
+        }
+        
+        .divider {
+            border-left: none;
+            border-top: 2px solid rgba(0,0,0,0.1);
+            width: 100%;
+            margin: 2em 0;
+        }
+        
+        .profile-row {
+            flex-direction: column;
+        }
+        
+        .label, .value {
+            width: 100%;
+            margin-bottom: 0.5em;
+        }
+    }
+</style>
+
+<div class="container profile-container">
+    <div class="row">
+        <!-- Personal Details Column -->
+        <div class="col-md-6 profile-section">
+            <div class="text-center">
+                <h2 class="profile-header">My Profile</h2>
+            </div>
+            
+            <div class="profile-row row">
+                <div class="col-md-4 label">Full Name:</div>
+                <div class="col-md-8 value">{{pro.user.first_name}} {{pro.user.last_name}}</div>
+            </div>
+            
+            <div class="profile-row row">
+                <div class="col-md-4 label">Image:</div>
+                <div class="col-md-8">
+                    {% if pro.service_name %}
+                        <img src="{{pro.image.url}}" class="profile-img">
+                    {% else %}
+                        <span class="not-available">Not available</span>
+                        <img src="" class="profile-img" style="display:none;">
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="profile-row row">
+                <div class="col-md-4 label">Email:</div>
+                <div class="col-md-8 value">{{pro.user.email}}</div>
+            </div>
+            
+            <div class="profile-row row">
+                <div class="col-md-4 label">Contact:</div>
+                <div class="col-md-8 value">{{pro.contact}}</div>
+            </div>
+            
+            <div class="profile-row row">
+                <div class="col-md-4 label">Address:</div>
+                <div class="col-md-8 value">{{pro.address}}</div>
+            </div>
+            
+            <div class="profile-row row">
+                <div class="col-md-4 label">City:</div>
+                <div class="col-md-8 value">{{pro.city}}</div>
+            </div>
+        </div>
+        
+        <!-- Vertical Divider -->
+        <div class="col-md-1 d-flex justify-content-center divider"></div>
+        
+        <!-- Service Details Column -->
+        <div class="col-md-5 profile-section">
+            <div class="text-center">
+                <h2 class="profile-header">Service Details</h2>
+            </div>
+            
+            <div class="profile-row row">
+                <div class="col-md-5 label">Date of Birth:</div>
+                <div class="col-md-7 value">{{pro.dob}}</div>
+            </div>
+            
+            <div class="profile-row row">
+                <div class="col-md-5 label">Occupation:</div>
+                <div class="col-md-7 value">{{pro.service_name}}</div>
+            </div>
+            
+            <div class="profile-row row">
+                <div class="col-md-5 label">Experience:</div>
+                <div class="col-md-7 value">{{pro.experience}} year</div>
+            </div>
+            
+            <div class="profile-row row">
+                <div class="col-md-5 label">ID Type:</div>
+                <div class="col-md-7 value">{{pro.id_type}}</div>
+            </div>
+            
+            <div class="profile-row row">
+                <div class="col-md-5 label">ID Card:</div>
+                <div class="col-md-7">
+                    {% if pro.service_name %}
+                        <img src="{{pro.id_card.url}}" class="id-card-img">
+                    {% else %}
+                        <span class="not-available">Not available</span>
+                        <img src="" class="id-card-img" style="display:none;">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-center">
+        <a href="{% url 'edit_service_profile' %}">
+            <button class="btn edit-btn">Edit Profile</button>
+        </a>
+    </div>    
+</div>
+
+{% endblock %}

@@ -1,0 +1,458 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    :root {
+        --primary: #5f72be;
+        --secondary: #9921e8;
+        --error: #e74c3c;
+        --success: #2ecc71;
+    }
+    
+    .registration-container {
+        max-width: 800px;
+        margin: 2rem auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .registration-header {
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+    
+    .registration-title {
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .registration-form {
+        padding: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(95, 114, 190, 0.2);
+    }
+    
+    .form-control.valid {
+        border-color: var(--success);
+    }
+    
+    .form-control.invalid {
+        border-color: var(--error);
+    }
+    
+    .error-message {
+        color: var(--error);
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: none;
+    }
+    
+    .user-type-container {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .user-type-option {
+        flex: 1;
+        text-align: center;
+        padding: 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .user-type-option.selected {
+        border-color: var(--primary);
+        background-color: rgba(95, 114, 190, 0.1);
+    }
+    
+    .user-type-option input {
+        display: none;
+    }
+    
+    .terms-container {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .terms-checkbox {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+        accent-color: var(--primary);
+    }
+    
+    .terms-text {
+        font-size: 0.875rem;
+    }
+    
+    .terms-link {
+        color: var(--primary);
+        text-decoration: underline;
+    }
+    
+    .submit-btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(153, 33, 232, 0.3);
+    }
+    
+    .login-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #2c3e50;
+    }
+    
+    .login-link a {
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+    }
+    
+    .login-link a:hover {
+        text-decoration: underline;
+    }
+    
+    @media (max-width: 768px) {
+        .registration-container {
+            margin: 1rem;
+            border-radius: 0;
+        }
+        
+        .user-type-container {
+            flex-direction: column;
+        }
+    }
+</style>
+
+<div class="registration-container">
+    <div class="registration-header">
+        <h1 class="registration-title">Create Your Account</h1>
+        <p>Join our community today</p>
+    </div>
+    
+    <div class="registration-form">
+        <form id="registrationForm" method="POST" action="#" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Username -->
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" name="uname" class="form-control" 
+                       pattern="[a-zA-Z0-9_]{4,20}" 
+                       title="4-20 characters (letters, numbers, underscores)" required>
+                <div class="error-message" id="username-error"></div>
+            </div>
+            
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" id="email" name="email" class="form-control" 
+                       pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+                <div class="error-message" id="email-error"></div>
+            </div>
+            
+            <!-- Name Fields -->
+            <div style="display: flex; gap: 1rem;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" id="firstName" name="fname" class="form-control" 
+                           pattern="[A-Za-z ]+" title="Letters only" required>
+                    <div class="error-message" id="fname-error"></div>
+                </div>
+                
+                <div class="form-group" style="flex: 1;">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" id="lastName" name="lname" class="form-control" 
+                           pattern="[A-Za-z ]+" title="Letters only" required>
+                    <div class="error-message" id="lname-error"></div>
+                </div>
+            </div>
+            
+            <!-- Password Fields -->
+            <div style="display: flex; gap: 1rem;">
+                <div class="form-group" style="flex: 1;">
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="pwd" class="form-control" 
+                           pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}" 
+                           title="8+ chars with uppercase, lowercase, number & special char" required>
+                    <div class="error-message" id="password-error"></div>
+                </div>
+                
+                <div class="form-group" style="flex: 1;">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="cpwd" class="form-control" required>
+                    <div class="error-message" id="confirm-password-error"></div>
+                </div>
+            </div>
+            
+            <!-- Contact -->
+            <div class="form-group">
+                <label for="contact" class="form-label">Contact Number</label>
+                <input type="tel" id="contact" name="contact" class="form-control" 
+                       pattern="[0-9]{10}" title="10 digit phone number" required>
+                <div class="error-message" id="contact-error"></div>
+            </div>
+            
+            <!-- Address -->
+            <div class="form-group">
+                <label for="address" class="form-label">Address</label>
+                <textarea id="address" name="address" class="form-control" rows="3" required></textarea>
+                <div class="error-message" id="address-error"></div>
+            </div>
+            
+            <!-- Profile Image -->
+            <div class="form-group">
+                <label for="image" class="form-label">Profile Image</label>
+                <input type="file" id="image" name="image" class="form-control" 
+                       accept="image/*" required>
+                <div class="error-message" id="image-error"></div>
+            </div>
+            
+            <!-- User Type -->
+            <div class="form-group">
+                <label class="form-label">User Type</label>
+                <div class="user-type-container">
+                    <label class="user-type-option">
+                        <input type="radio" name="type" value="service_man" required>
+                        Service Provider
+                    </label>
+                    <label class="user-type-option">
+                        <input type="radio" name="type" value="customer">
+                        Customer
+                    </label>
+                </div>
+                <div class="error-message" id="type-error"></div>
+            </div>
+            
+            <!-- Terms -->
+            <div class="terms-container">
+                <input type="checkbox" id="terms" name="terms" class="terms-checkbox" required>
+                <label for="terms" class="terms-text">
+                    I agree to the <a href="#" class="terms-link">Terms and Conditions</a> and 
+                    <a href="#" class="terms-link">Privacy Policy</a>
+                </label>
+            </div>
+            <div class="error-message" id="terms-error"></div>
+            
+            <button type="submit" class="submit-btn">Create Account</button>
+        </form>
+        
+        <div class="login-link">
+            Already have an account? <a href="{% url 'login' %}">Sign In</a>
+        </div>
+    </div>
+</div>
+
+{% if error == "create" %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        alert('Registration Successful');
+        window.location = '{% url 'login' %}';
+    });
+</script>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('registrationForm');
+        const userTypeOptions = document.querySelectorAll('.user-type-option');
+        
+        // User type selection styling
+        userTypeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                userTypeOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                this.querySelector('input').checked = true;
+                document.getElementById('type-error').style.display = 'none';
+            });
+        });
+        
+        // Real-time validation for names (letters only)
+        document.getElementById('firstName').addEventListener('input', function() {
+            this.value = this.value.replace(/[^A-Za-z ]/g, '');
+            validateField(this, 'fname-error', 'Please enter a valid first name (letters only)');
+        });
+        
+        document.getElementById('lastName').addEventListener('input', function() {
+            this.value = this.value.replace(/[^A-Za-z ]/g, '');
+            validateField(this, 'lname-error', 'Please enter a valid last name (letters only)');
+        });
+        
+        // Real-time validation for contact (numbers only, max 10)
+        document.getElementById('contact').addEventListener('input', function() {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
+            validateField(this, 'contact-error', 'Please enter a valid 10-digit phone number');
+        });
+        
+        // Password confirmation validation
+        document.getElementById('confirmPassword').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = this.value;
+            
+            if (confirmPassword !== password) {
+                showError('confirm-password-error', 'Passwords do not match');
+                this.classList.add('invalid');
+                this.classList.remove('valid');
+            } else {
+                hideError('confirm-password-error');
+                this.classList.add('valid');
+                this.classList.remove('invalid');
+            }
+        });
+        
+        // Email validation
+        document.getElementById('email').addEventListener('input', function() {
+            const email = this.value;
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            
+            if (!emailRegex.test(email)) {
+                showError('email-error', 'Please enter a valid email address');
+                this.classList.add('invalid');
+                this.classList.remove('valid');
+            } else {
+                hideError('email-error');
+                this.classList.add('valid');
+                this.classList.remove('invalid');
+            }
+        });
+        
+        // Image validation
+        document.getElementById('image').addEventListener('change', function() {
+            const file = this.files[0];
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            
+            if (file) {
+                if (!validTypes.includes(file.type)) {
+                    showError('image-error', 'Please select a valid image file (JPEG, PNG, GIF)');
+                    this.classList.add('invalid');
+                    this.classList.remove('valid');
+                } else {
+                    hideError('image-error');
+                    this.classList.add('valid');
+                    this.classList.remove('invalid');
+                }
+            }
+        });
+        
+        // Form submission validation
+        form.addEventListener('submit', function(event) {
+            let isValid = true;
+            
+            // Validate all required fields
+            const requiredFields = form.querySelectorAll('[required]');
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    const errorId = field.id + '-error';
+                    showError(errorId, 'This field is required');
+                    field.classList.add('invalid');
+                    isValid = false;
+                }
+            });
+            
+            // Validate password match
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            if (password !== confirmPassword) {
+                showError('confirm-password-error', 'Passwords do not match');
+                isValid = false;
+            }
+            
+            // Validate password strength
+            const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+            if (!strongPasswordRegex.test(password)) {
+                showError('password-error', 'Password must contain uppercase, lowercase, number, and special character');
+                isValid = false;
+            }
+            
+            // Validate user type selection
+            const userTypeSelected = form.querySelector('input[name="type"]:checked');
+            if (!userTypeSelected) {
+                showError('type-error', 'Please select a user type');
+                isValid = false;
+            }
+            
+            // Validate terms checkbox
+            if (!document.getElementById('terms').checked) {
+                showError('terms-error', 'You must agree to the terms and conditions');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+        
+        // Helper functions
+        function validateField(field, errorId, errorMessage) {
+            if (field.checkValidity()) {
+                hideError(errorId);
+                field.classList.add('valid');
+                field.classList.remove('invalid');
+            } else {
+                showError(errorId, errorMessage);
+                field.classList.add('invalid');
+                field.classList.remove('valid');
+            }
+        }
+        
+        function showError(errorId, message) {
+            const errorElement = document.getElementById(errorId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+        
+        function hideError(errorId) {
+            const errorElement = document.getElementById(errorId);
+            errorElement.style.display = 'none';
+        }
+    });
+</script>
+
+{% endblock %}

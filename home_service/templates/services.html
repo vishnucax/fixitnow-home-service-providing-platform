@@ -1,0 +1,254 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+            --secondary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            --dark-color: #2c3e50;
+            --light-color: #f8f9fa;
+        }
+        
+        /* Global Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+        }
+        
+        .section-title {
+            position: relative;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            color: var(--dark-color);
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -15px;
+            width: 80px;
+            height: 4px;
+            background: var(--primary-gradient);
+            border-radius: 2px;
+        }
+        
+        /* Services Section */
+        .services-section {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .service-card {
+            border-radius: 16px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            background: white;
+            height: 100%;
+            position: relative;
+        }
+        
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(106, 17, 203, 0.15);
+        }
+        
+        .image-container {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+        }
+        
+        .service-image {
+            height: 100%;
+            width: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .service-card:hover .service-image {
+            transform: scale(1.05);
+        }
+        
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.3));
+        }
+        
+        .service-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: white;
+            color: #5f72be;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .service-content {
+            padding: 20px;
+        }
+        
+        .service-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+        
+        .service-description {
+            color: #6c757d;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .service-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        /* Buttons */
+        .btn-gradient {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            color: white;
+        }
+        
+        /* Rating Stars */
+        .rating i {
+            margin-right: 3px;
+            color: #ffc107;
+        }
+        
+        /* Hero Banner */
+        .services-hero {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 100px 0 60px;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+        
+        .services-hero h1 {
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        
+        .services-hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        .breadcrumb {
+            justify-content: center;
+            background: transparent;
+            padding: 0;
+        }
+        
+        .breadcrumb-item a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+        }
+        
+        .breadcrumb-item.active {
+            color: white;
+        }
+        
+        .breadcrumb-item+.breadcrumb-item::before {
+            color: rgba(255,255,255,0.5);
+        }
+    </style>
+</head>
+
+<!-- Hero Banner -->
+<section class="services-hero">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Our Services</h1>
+        <p class="lead">Discover the wide range of professional home services we offer to make your life easier</p>
+        
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Services</li>
+            </ol>
+        </nav>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="services-section">
+    <div class="container">
+        <h2 class="section-title text-center">What We Offer</h2>
+        <p class="text-center mb-5" style="max-width: 700px; margin: 0 auto; color: #6c757d;">
+            All our services are performed by verified professionals with extensive experience in their fields. 
+            We guarantee quality work and customer satisfaction.
+        </p>
+        
+        <div class="row g-4">
+            {% for i in ser %}
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card service-card">
+                    <div class="image-container">
+                        <img class="service-image" src="{{i.image.url}}" alt="{{i.category}}">
+                        <div class="image-overlay"></div>
+                        <span class="service-badge">Popular</span>
+                    </div>
+                    <div class="service-content">
+                        <h3 class="service-title">{{i.category}}</h3>
+                        <p class="service-description">{{i.desc|truncatewords:20}}</p>
+                        <div class="service-footer">
+                            <div class="rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <span class="ms-2">4.8</span>
+                            </div>
+                            <a href="{% url 'explore_services' i.id %}" class="btn btn-gradient px-3 py-1">
+                                <i class="fas fa-arrow-right me-1"></i>Explore
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5">
+            <a href="{% url 'user_home' %}" class="btn btn-gradient px-4">
+                <i class="fas fa-arrow-left me-2"></i>Back to Home
+            </a>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

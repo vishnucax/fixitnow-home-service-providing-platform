@@ -1,0 +1,229 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    :root {
+        --primary: #5f72be;
+        --secondary: #9921e8;
+        --error: #e74c3c;
+        --success: #2ecc71;
+        --light: #f8f9fa;
+        --dark: #2c3e50;
+    }
+    
+    .booking-container {
+        max-width: 1000px;
+        margin: 4rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    .booking-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+    
+    .booking-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--dark);
+        position: relative;
+        display: inline-block;
+    }
+    
+    .booking-title:after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -10px;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        border-radius: 2px;
+    }
+    
+    .booking-subtitle {
+        color: #6c757d;
+        margin-top: 1rem;
+    }
+    
+    .booking-form {
+        padding: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(95, 114, 190, 0.2);
+    }
+    
+    .form-control.invalid {
+        border-color: var(--error);
+    }
+    
+    .form-control.valid {
+        border-color: var(--success);
+    }
+    
+    .validation-message {
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+    }
+    
+    .validation-message.error {
+        color: var(--error);
+    }
+    
+    .validation-message.success {
+        color: var(--success);
+    }
+    
+    .submit-btn {
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 14px 30px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 1rem;
+        width: 100%;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(153, 33, 232, 0.3);
+    }
+    
+    .booking-image {
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    
+    @media (max-width: 768px) {
+        .booking-container {
+            padding: 1.5rem;
+            margin: 2rem auto;
+        }
+        
+        .booking-title {
+            font-size: 2rem;
+        }
+        
+        .booking-form {
+            padding: 1rem;
+        }
+    }
+</style>
+
+{% if terror %}
+<script>
+    alert('Booking Successful, we will contact you soon');
+    window.location=('{% url 'customer_order' %}');
+</script>
+{% endif %}
+
+<div class="booking-container">
+    <div class="booking-header">
+        <h1 class="booking-title">Book Service</h1>
+        <p class="booking-subtitle">Complete the form below to schedule your service</p>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <form action="#" method="post" class="booking-form" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="contactusername" class="form-label">Name</label>
+                    <input class="form-control" type="text" name="name" value="{{ser.user.first_name}}" oninput="validateNameInput(this)" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contactemail" class="form-label">Mobile</label>
+                    <input class="form-control" type="text" name="contact" value="{{ser.contact}}" required readonly oninput="validatePhoneNumber(this)">
+                    <div id="phoneMessage" class="validation-message"></div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="contactusername" class="form-label">Address / Location URL</label>
+                    <input class="form-control" type="text" name="add" value="{{ser.address}}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="bookingDate" class="form-label">Date</label>
+                    <input class="form-control" type="date" name="date" id="bookingDate" required>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-calendar-check me-2"></i> Book Now
+                </button>
+            </form>
+        </div>
+        
+        <div class="col-md-6 d-flex align-items-center justify-content-center">
+            <img src="{% static 'images/booking.png' %}" class="booking-image" alt="Booking Illustration">
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let today = new Date().toISOString().split('T')[0];
+        document.getElementById("bookingDate").setAttribute("min", today);
+    });
+
+    function validateNameInput(input) {
+        const lastChar = input.value.slice(-1);
+        if (!/^[a-zA-Z]$/.test(lastChar)) {
+            input.value = input.value.slice(0, -1);
+        }
+    }
+
+    function validatePhoneNumber(input) {
+        const messageDiv = document.getElementById('phoneMessage');
+        const value = input.value.replace(/\D/g, '');
+        input.value = value;
+        
+        if (value.length === 10) {
+            messageDiv.textContent = 'Phone number is valid';
+            messageDiv.className = 'validation-message success';
+            input.classList.remove('invalid');
+            input.classList.add('valid');
+        } else {
+            messageDiv.textContent = 'Phone number must be 10 digits';
+            messageDiv.className = 'validation-message error';
+            input.classList.remove('valid');
+            input.classList.add('invalid');
+        }
+    }
+</script>
+
+{% endblock %}

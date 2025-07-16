@@ -1,0 +1,305 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    :root {
+        --primary: #5f72be;
+        --secondary: #9921e8;
+        --accent: #00cec9;
+        --dark: #212529;
+        --light: #f8f9fa;
+        --white: #ffffff;
+        --gray: #e9ecef;
+    }
+    
+    .service-professionals-container {
+        padding: 5rem 0;
+        background-color: #f8fafc;
+    }
+    
+    .service-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+    
+    .service-title {
+        font-size: 2.75rem;
+        font-weight: 800;
+        color: var(--dark);
+        margin-bottom: 1.5rem;
+        background: linear-gradient(315deg, var(--secondary) 0%, var(--primary) 74%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .service-subtitle {
+        color: #6c757d;
+        max-width: 700px;
+        margin: 0 auto;
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+    
+    .professionals-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+    }
+    
+    .professional-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        border: 1px solid rgba(0,0,0,0.03);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    
+    .professional-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(153, 33, 232, 0.15);
+    }
+    
+    .professional-image-container {
+        position: relative;
+        height: 240px;
+        overflow: hidden;
+    }
+    
+    .professional-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.8s ease;
+    }
+    
+    .professional-card:hover .professional-image {
+        transform: scale(1.1);
+    }
+    
+    .professional-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: rgba(255,255,255,0.9);
+        color: var(--secondary);
+        padding: 5px 12px;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+        backdrop-filter: blur(4px);
+    }
+    
+    .professional-content {
+        padding: 1.75rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .professional-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark);
+        margin-bottom: 0.75rem;
+        line-height: 1.3;
+    }
+    
+    .professional-title {
+        color: var(--primary);
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 1.25rem;
+        letter-spacing: 0.5px;
+    }
+    
+    .professional-meta {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1.25rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+    
+    .professional-meta-item {
+        display: flex;
+        align-items: center;
+        font-size: 0.85rem;
+        color: #495057;
+    }
+    
+    .professional-meta-item i {
+        margin-right: 6px;
+        color: var(--primary);
+        font-size: 0.9rem;
+    }
+    
+    .professional-details {
+        color: #495057;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        flex-grow: 1;
+    }
+    
+    .professional-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 1.25rem;
+        border-top: 1px solid rgba(0,0,0,0.05);
+        margin-top: auto;
+    }
+    
+    .professional-price {
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--dark);
+    }
+    
+    .professional-price span {
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #6c757d;
+    }
+    
+    .book-btn {
+        background: linear-gradient(315deg, var(--secondary) 0%, var(--primary) 74%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 0.65rem 1.75rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 15px rgba(153, 33, 232, 0.2);
+    }
+    
+    .book-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(153, 33, 232, 0.3);
+        color: white;
+    }
+    
+    .book-btn i {
+        margin-right: 8px;
+    }
+    
+    .empty-state {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        grid-column: 1 / -1;
+    }
+    
+    .empty-state-icon {
+        font-size: 3.5rem;
+        color: #e9ecef;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(315deg, var(--secondary) 0%, var(--primary) 74%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .empty-state h4 {
+        color: var(--dark);
+        margin-bottom: 0.75rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+    
+    .empty-state p {
+        color: #6c757d;
+        max-width: 500px;
+        margin: 0 auto;
+        font-size: 1.05rem;
+    }
+    
+    @media (max-width: 992px) {
+        .professionals-grid {
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .service-title {
+            font-size: 2.25rem;
+        }
+        
+        .professional-image-container {
+            height: 200px;
+        }
+    }
+</style>
+
+<div class="service-professionals-container">
+    <div class="container">
+        <div class="service-header">
+            <h1 class="service-title">{{ser.category}} Professionals</h1>
+            <p class="service-subtitle">Browse and book from our verified professionals with proven experience in {{ser.category}} services</p>
+        </div>
+        
+        {% if order %}
+        <div class="professionals-grid">
+            {% for i in order %}
+            <div class="professional-card">
+                <div class="professional-image-container">
+                    <img src="{{i.image.url}}" class="professional-image" alt="{{i.user.first_name}} {{i.user.last_name}}">
+                    <span class="professional-badge">Verified</span>
+                </div>
+                
+                <div class="professional-content">
+                    <div>
+                        <h3 class="professional-name">{{i.user.first_name}} {{i.user.last_name}}</h3>
+                        <div class="professional-title">{{ser.category}} Specialist</div>
+                    </div>
+                    
+                    <div class="professional-meta">
+                       
+                        <div class="professional-meta-item">
+                            <i class="fas fa-briefcase"></i>
+                            <span>{{i.experience}} years exp</span>
+                        </div>
+                        
+                    </div>
+                    
+                    <p class="professional-details">
+                        Professional {{ser.category}} specialist with {{i.experience}} years of experience. 
+                        Committed to delivering high-quality service with attention to detail.
+                    </p>
+                    
+                    <div class="professional-footer">
+                        <div class="professional-price">
+                            ₹4000 <span>/service</span>
+                        </div>
+                        <a href="{% url 'booking' i.id %}" class="book-btn">
+                            <i class="fas fa-calendar-alt"></i> Book Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">
+                <i class="fas fa-user-tie"></i>
+            </div>
+            <h4>No Professionals Available</h4>
+            <p>We're currently expanding our network of {{ser.category}} professionals in your area. Please check back soon or try another service category.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

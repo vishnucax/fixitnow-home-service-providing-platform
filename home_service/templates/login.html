@@ -1,0 +1,313 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    :root {
+        --primary: #5f72be;
+        --secondary: #9921e8;
+        --error: #e74c3c;
+        --warning: #f39c12;
+        --success: #2ecc71;
+    }
+    
+    .login-container {
+        max-width: 500px;
+        margin: 2rem auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .login-header {
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+    
+    .login-title {
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .login-form {
+        padding: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #2c3e50;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(95, 114, 190, 0.2);
+    }
+    
+    .form-control.error {
+        border-color: var(--error);
+    }
+    
+    .password-container {
+        position: relative;
+    }
+    
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: var(--primary);
+    }
+    
+    .forgot-password {
+        text-align: right;
+        margin-bottom: 1.5rem;
+    }
+    
+    .forgot-password a {
+        color: var(--primary);
+        font-weight: 500;
+        text-decoration: none;
+    }
+    
+    .forgot-password a:hover {
+        text-decoration: underline;
+    }
+    
+    .submit-btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(153, 33, 232, 0.3);
+    }
+    
+    .signup-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #2c3e50;
+    }
+    
+    .signup-link a {
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+    }
+    
+    .signup-link a:hover {
+        text-decoration: underline;
+    }
+    
+    /* Notification styles */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        z-index: 1000;
+        transform: translateX(200%);
+        transition: transform 0.3s ease;
+        max-width: 300px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .notification.show {
+        transform: translateX(0);
+    }
+    
+    .notification.error {
+        background-color: var(--error);
+    }
+    
+    .notification.warning {
+        background-color: var(--warning);
+    }
+    
+    .notification-icon {
+        margin-right: 10px;
+        font-size: 1.2rem;
+    }
+    
+    @media (max-width: 768px) {
+        .login-container {
+            margin: 1rem;
+            border-radius: 0;
+        }
+        
+        .notification {
+            top: 10px;
+            right: 10px;
+            max-width: calc(100% - 20px);
+        }
+    }
+</style>
+
+<!-- Notification container -->
+<div id="notification" class="notification" style="display: none;">
+    <span class="notification-icon"></span>
+    <span class="notification-message"></span>
+</div>
+
+<div class="login-container">
+    <div class="login-header">
+        <h1 class="login-title">Welcome to FixItNow</h1>
+        <p>Sign in to your account</p>
+    </div>
+    
+    <div class="login-form">
+        <form id="loginForm" method="POST" action="#">
+            {% csrf_token %}
+            
+            <!-- Username -->
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" name="uname" class="form-control" 
+                       placeholder="Enter your username" required>
+            </div>
+            
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="pwd" class="form-control" 
+                           placeholder="Enter your password" required>
+                    <span class="toggle-password" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+            </div>
+            
+            <div class="forgot-password">
+                <a href="{% url 'reset_password' %}">Forgot your password?</a>
+            </div>
+            
+            <button type="submit" class="submit-btn">Sign In</button>
+        </form>
+        
+        <div class="signup-link">
+            Don't have an account? <a href="{% url 'signup' %}">Sign up</a><br>
+            Are you an admin? <a href="{% url 'admin_login' %}">Log in here </a>
+        </div>
+    </div>
+</div>
+
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('loginForm');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const usernameInput = document.getElementById('username');
+        const notification = document.getElementById('notification');
+        const notificationIcon = notification.querySelector('.notification-icon');
+        const notificationMessage = notification.querySelector('.notification-message');
+        
+        // Toggle password visibility
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+        
+        // Show notification function
+        function showNotification(message, type) {
+            // Set notification content and style
+            notification.className = `notification ${type} show`;
+            notificationMessage.textContent = message;
+            
+            // Set appropriate icon
+            if (type === 'error') {
+                notificationIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
+            } else if (type === 'warning') {
+                notificationIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
+            }
+            
+            notification.style.display = 'flex';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 300);
+            }, 5000);
+        }
+        
+        // Check for error messages from backend
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'error' %}
+                    {% if message.message == 'no_account' %}
+                        showNotification("⚠️ Login failed: Incorrect username or password. Don’t have an account? Sign up now!", "error");
+                        usernameInput.classList.add('error');
+                    {% elif message.message == 'wrong_password' %}
+                        showNotification("Incorrect password. Please try again.", "error");
+                        passwordInput.classList.add('error');
+                    {% elif message.message == 'pending_profile' %}
+                        showNotification("Profile pending approval. Please contact support.", "warning");
+                    {% else %}
+                        showNotification("{{ message }}", "error");
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        
+        // Clear error styles when user starts typing
+        usernameInput.addEventListener('input', function() {
+            this.classList.remove('error');
+        });
+        
+        passwordInput.addEventListener('input', function() {
+            this.classList.remove('error');
+        });
+        
+        // Form submission handling
+        loginForm.addEventListener('submit', function(e) {
+            // You can add client-side validation here if needed
+            // For example, check if fields are empty
+            if (!usernameInput.value.trim() || !passwordInput.value.trim()) {
+                e.preventDefault();
+                showNotification("Please fill in all fields", "error");
+            }
+        });
+    });
+</script>
+
+{% endblock %}

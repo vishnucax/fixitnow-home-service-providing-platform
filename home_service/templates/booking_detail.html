@@ -1,0 +1,312 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    :root {
+        --primary: #5f72be;
+        --secondary: #9921e8;
+        --light: #f8f9fa;
+        --dark: #2c3e50;
+        --gray: #6c757d;
+    }
+    
+    .booking-detail-container {
+        background-color: #f8f9fa;
+        min-height: 100vh;
+        padding: 4rem 0;
+    }
+    
+    .booking-card {
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        overflow: hidden;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+    
+    .booking-header {
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        position: relative;
+    }
+    
+    .service-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: rgba(255,255,255,0.2);
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .profile-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: -60px;
+    }
+    
+    .profile-image {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid white;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    
+    .provider-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin: 1rem 0 0.5rem;
+        color: var(--dark);
+    }
+    
+    .provider-title {
+        color: var(--gray);
+        margin-bottom: 1.5rem;
+    }
+    
+    .detail-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        padding: 2rem;
+    }
+    
+    .detail-section {
+        background: var(--light);
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+    
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--primary);
+        margin-bottom: 1.2rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .section-title i {
+        margin-right: 10px;
+        font-size: 1.2rem;
+    }
+    
+    .detail-item {
+        display: flex;
+        margin-bottom: 1rem;
+        align-items: flex-start;
+    }
+    
+    .detail-label {
+        font-weight: 500;
+        color: var(--dark);
+        min-width: 120px;
+    }
+    
+    .detail-value {
+        color: var(--gray);
+        flex: 1;
+    }
+    
+    .verification-section {
+        background: rgba(95, 114, 190, 0.05);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        text-align: center;
+    }
+    
+    .id-card-image {
+        max-width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        margin: 1rem 0;
+        border: 1px solid #eee;
+    }
+    
+    .verification-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(25, 135, 84, 0.1);
+        color: #198754;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        margin-top: 1rem;
+    }
+    
+    .verification-badge i {
+        margin-right: 8px;
+    }
+    
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        padding: 0 2rem 2rem;
+        flex-wrap: wrap;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        border: none;
+        border-radius: 8px;
+        padding: 10px 25px;
+        color: white;
+        font-weight: 500;
+        transition: all 0.3s;
+    }
+    
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(153, 33, 232, 0.3);
+    }
+    
+    .btn-outline {
+        background: transparent;
+        border: 2px solid var(--primary);
+        color: var(--primary);
+    }
+    
+    .btn-outline:hover {
+        background: rgba(95, 114, 190, 0.1);
+        color: var(--primary);
+    }
+    
+    @media (max-width: 768px) {
+        .booking-header {
+            padding: 1.5rem;
+        }
+        
+        .detail-grid {
+            grid-template-columns: 1fr;
+            padding: 1.5rem;
+        }
+        
+        .profile-image {
+            width: 100px;
+            height: 100px;
+        }
+    }
+</style>
+
+<div class="booking-detail-container">
+    <div class="booking-card">
+        <div class="booking-header">
+            <div class="service-badge">
+                {{order.service.service_name}}
+            </div>
+            <h2>Booking Confirmation</h2>
+            <p>Booking ID: #{{order.id}}</p>
+        </div>
+        <br><br><br><br>
+        <div class="profile-container">
+            <img src="{{order.service.image.url}}" class="profile-image" alt="Service Provider">
+            <h3 class="provider-name">{{order.service.user.first_name}} {{order.service.user.last_name}}</h3>
+            <p class="provider-title">Professional Service Provider</p>
+        </div>
+        
+        <div class="detail-grid">
+            <div class="detail-section">
+                <h4 class="section-title">
+                    <i class="fas fa-user-tie"></i> Provider Details
+                </h4>
+                <div class="detail-item">
+                    <span class="detail-label">Contact:</span>
+                    <span class="detail-value">{{order.service.contact}}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Address:</span>
+                    <span class="detail-value">{{order.service.address}}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Experience:</span>
+                    <span class="detail-value">{{order.service.experience}} years</span>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h4 class="section-title">
+                    <i class="fas fa-calendar-alt"></i> Booking Details
+                </h4>
+                <div class="detail-item">
+                    <span class="detail-label">Service:</span>
+                    <span class="detail-value">{{order.service.service_name}}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Date:</span>
+                    <span class="detail-value">{{order.book_date}}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Duration:</span>
+                    <span class="detail-value">{{order.book_days}} days, {{order.book_hours}} hours</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Status:</span>
+                    <span class="detail-value">{{order.status.status}}</span>
+                </div>
+            </div>
+            
+            <div class="verification-section">
+                <h4 class="section-title">
+                    <i class="fas fa-id-card"></i> Identity Verification
+                </h4>
+                
+                <div class="verification-badge">
+                    <i class="fas fa-check-circle"></i> Verified Professional
+                </div>
+            </div>
+        </div>
+        
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="contactProvider()">
+                <i class="fas fa-phone-alt"></i> Contact Provider
+            </button>
+            
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+   
+        // Create a temporary element to hold our receipt
+        const element = document.createElement('div');
+        element.innerHTML = receiptContent;
+        
+        // PDF options
+        const opt = {
+            margin: 10,
+            filename: 'FixItNow_Receipt_#{{order.id}}.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Generate PDF
+        html2pdf().set(opt).from(element).save();
+    
+
+    function contactProvider() {
+        // You can implement actual contact functionality here
+        alert('Contacting provider: {{order.service.contact}}');
+    }
+</script>
+
+{% endblock %}

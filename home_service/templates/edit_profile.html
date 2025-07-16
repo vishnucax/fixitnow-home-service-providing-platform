@@ -1,0 +1,248 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    :root {
+        --primary: #5f72be;
+        --secondary: #9921e8;
+        --light: #f8f9fa;
+        --dark: #2c3e50;
+        --error: #e74c3c;
+    }
+    
+    .profile-edit-container {
+        max-width: 800px;
+        margin: 5% auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        overflow: hidden;
+        padding: 0;
+    }
+    
+    .profile-edit-header {
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+    
+    .profile-edit-title {
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .profile-edit-content {
+        padding: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .image-preview-container {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(95, 114, 190, 0.25);
+    }
+    
+    .form-control.is-invalid {
+        border-color: var(--error);
+    }
+    
+    .invalid-feedback {
+        color: var(--error);
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: none;
+    }
+    
+    .submit-btn {
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 30px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        width: 100%;
+        margin-top: 1rem;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(153, 33, 232, 0.4);
+    }
+</style>
+
+<div class="profile-edit-container">
+    <div class="profile-edit-header">
+        <h1 class="profile-edit-title">Edit Profile</h1>
+        <p>Update your personal information</p>
+    </div>
+    
+    <div class="profile-edit-content">
+        <form method="post" action="" enctype="multipart/form-data" id="profileForm" novalidate>
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="firstName" name="fname" 
+                           value="{{pro.user.first_name}}" pattern="[A-Za-z ]+" 
+                           title="Only letters and spaces allowed" required>
+                    <div class="invalid-feedback">Please enter a valid first name (letters only)</div>
+                </div>
+                
+                <div class="form-group col-md-6">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="lastName" name="lname" 
+                           value="{{pro.user.last_name}}" pattern="[A-Za-z ]+" 
+                           title="Only letters and spaces allowed" required>
+                    <div class="invalid-feedback">Please enter a valid last name (letters only)</div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" name="uname" 
+                       value="{{pro.user.username}}" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="email" class="form-label">Email Address</label>
+                <input type="email" class="form-control" id="email" name="email" 
+                       value="{{pro.user.email}}" 
+                       pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required
+                       oninput="validateEmail(this)">
+                <div class="invalid-feedback">Please enter a valid email address (must contain @ and .)</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="address" class="form-label">Address</label>
+                <input type="text" class="form-control" id="address" name="address" 
+                       value="{{pro.address}}" required>
+                <div class="invalid-feedback">Please enter your address</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="contact" class="form-label">Contact Number</label>
+                <input type="tel" class="form-control" id="contact" name="contact" 
+                       value="{{pro.contact}}" pattern="[0-9]{10}" 
+                       title="10 digit phone number" required
+                       oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10)">
+                <div class="invalid-feedback">Please enter a valid 10-digit phone number</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="image" class="form-label">Profile Image</label>
+                <input type="file" class="form-control" id="image" name="image" 
+                       accept="image/*" onchange="validateImage(this)">
+                <div class="invalid-feedback">Please select a valid image file (JPEG, PNG, etc.)</div>
+                <div class="image-preview-container mt-2">
+                  <p class="form-label">Current Image:</p>
+                  <img src="{{pro.image.url}}" class="current-image" alt="Current Profile Image" width="350px">
+              </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">Update Profile</button>
+        </form>
+    </div>
+</div>
+
+{% if terror %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        alert('Profile updated successfully!');
+        window.location = "{% url 'profile' %}";
+    });
+</script>
+{% endif %}
+
+<script>
+    // Email validation (must contain @ and .)
+    function validateEmail(input) {
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const errorElement = input.nextElementSibling;
+        
+        if (!emailRegex.test(input.value)) {
+            input.classList.add('is-invalid');
+            errorElement.style.display = 'block';
+        } else {
+            input.classList.remove('is-invalid');
+            errorElement.style.display = 'none';
+        }
+    }
+    
+    // Image validation
+    function validateImage(input) {
+        const file = input.files[0];
+        const errorElement = input.nextElementSibling;
+        
+        if (file) {
+            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+            
+            if (!validTypes.includes(file.type)) {
+                errorElement.style.display = 'block';
+                input.classList.add('is-invalid');
+                input.value = '';
+            } else {
+                errorElement.style.display = 'none';
+                input.classList.remove('is-invalid');
+            }
+        }
+    }
+    
+    // Form validation
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('profileForm');
+        
+        form.addEventListener('submit', function(event) {
+            // Validate email separately
+            const emailInput = document.getElementById('email');
+            validateEmail(emailInput);
+            
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            form.classList.add('was-validated');
+        }, false);
+        
+        // Real-time validation for name fields
+        document.getElementById('firstName').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^A-Za-z ]/g, '');
+        });
+        
+        document.getElementById('lastName').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^A-Za-z ]/g, '');
+        });
+    });
+</script>
+
+{% endblock %}

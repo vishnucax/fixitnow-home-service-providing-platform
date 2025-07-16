@@ -1,0 +1,311 @@
+{% extends 'admin_navigation.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    .service-form-container {
+        padding: 2rem;
+        background-color: #f9f9ff;
+    }
+    
+    .form-card {
+        border: none;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        background: white;
+    }
+    
+    .form-header {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        color: white;
+        padding: 1.5rem;
+        text-align: center;
+    }
+    
+    .form-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0;
+        position: relative;
+        display: inline-block;
+    }
+    
+    .form-title:after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -10px;
+        width: 60px;
+        height: 4px;
+        background: white;
+        border-radius: 2px;
+    }
+    
+    .form-body {
+        padding: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+    
+    .form-control:focus {
+        border-color: #5f72be;
+        box-shadow: 0 0 0 0.2rem rgba(95, 114, 190, 0.25);
+    }
+    
+    .input-group-icon {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        color: white;
+        border: none;
+    }
+    
+    .btn-container {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+    
+    .btn {
+        border: none;
+        border-radius: 50px;
+        padding: 0.8rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-align: center;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-decoration: none;
+        width: 100%;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(315deg, #7a1cc5 0%, #4a5aa3 74%);
+    }
+    
+    .btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .btn i {
+        margin-right: 8px;
+    }
+    
+    .image-preview {
+        width: 100%;
+        height: 200px;
+        border-radius: 8px;
+        object-fit: cover;
+        border: 2px dashed rgba(106, 17, 203, 0.3);
+        margin-top: 1rem;
+        display: none;
+    }
+    
+    .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        width: 100%;
+    }
+    
+    .file-input-btn {
+        display: inline-block;
+        padding: 0.8rem;
+        background: #f8f9fa;
+        border: 1px dashed #5f72be;
+        border-radius: 8px;
+        color: #5f72be;
+        font-weight: 500;
+        width: 100%;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .file-input-btn:hover {
+        background: rgba(95, 114, 190, 0.1);
+    }
+    
+    .file-input-wrapper input[type="file"] {
+        font-size: 100px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+    }
+    
+    .is-invalid {
+        border-color: #dc3545;
+    }
+    
+    .error-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        display: none;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .btn-container {
+            flex-direction: column;
+        }
+        
+        .form-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="service-form-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="form-card">
+                    <div class="form-header">
+                        <h2 class="form-title">
+                            <i class="fas fa-plus-circle me-2"></i>Add New Service
+                        </h2>
+                    </div>
+                    
+                    <div class="form-body">
+                        <form method="post" enctype="multipart/form-data" id="serviceForm" novalidate>
+                            {% csrf_token %}
+                            
+                            <div class="form-group">
+                                <label for="serviceName" class="form-label">Service Name</label>
+                                <div class="input-group">
+                                    <span class="input-group-text input-group-icon">
+                                        <i class="fas fa-tools"></i>
+                                    </span>
+                                    <input type="text" class="form-control" id="serviceName" name="cat" 
+                                           placeholder="e.g., Plumbing, Electrical Repair" required
+                                           pattern="[A-Za-z0-9 ]+">
+                                </div>
+                                <div class="error-message" id="name-error">
+                                    Only letters, numbers and spaces are allowed
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="serviceImage" class="form-label">Service Image</label>
+                                <div class="file-input-wrapper">
+                                    <button type="button" class="file-input-btn">
+                                        <i class="fas fa-cloud-upload-alt me-2"></i>Choose Service Image
+                                    </button>
+                                    <input type="file" id="serviceImage" name="image" 
+                                           onchange="previewImage(this)" accept="image/*" required>
+                                </div>
+                                <small class="text-muted">Recommended size: 800x600px (JPG/PNG)</small>
+                                <img id="imagePreview" class="image-preview" alt="Service image preview">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="serviceDesc" class="form-label">Service Description</label>
+                                <textarea class="form-control" id="serviceDesc" name="desc" 
+                                          rows="5" placeholder="Detailed description of what this service includes..." 
+                                          required></textarea>
+                            </div>
+                            
+                            <div class="btn-container">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Add Service
+                                </button>
+                                <a href="{% url 'view_service' %}" class="btn btn-secondary">
+                                    <i class="fas fa-list me-2"></i>View All Services
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Image preview functionality
+    function previewImage(input) {
+        const preview = document.getElementById('imagePreview');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Form validation
+    document.getElementById('serviceForm').addEventListener('submit', function(event) {
+        let isValid = true;
+        
+        // Validate Service Name
+        const serviceName = document.getElementById('serviceName');
+        const nameError = document.getElementById('name-error');
+        if (!/^[A-Za-z0-9 ]+$/.test(serviceName.value)) {
+            serviceName.classList.add('is-invalid');
+            nameError.style.display = 'block';
+            isValid = false;
+        } else {
+            serviceName.classList.remove('is-invalid');
+            nameError.style.display = 'none';
+        }
+        
+        if (!isValid) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+    });
+
+    // Real-time validation for service name
+    document.getElementById('serviceName').addEventListener('input', function() {
+        this.value = this.value.replace(/[^A-Za-z0-9 ]/g, '');
+    });
+
+    {% if error %}
+    document.addEventListener('DOMContentLoaded', function() {
+        Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: 'New service added successfully',
+            confirmButtonColor: '#5f72be',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location = "{% url 'view_service' %}";
+            }
+        });
+    });
+    {% endif %}
+</script>
+
+{% endblock %}

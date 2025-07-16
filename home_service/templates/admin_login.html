@@ -1,0 +1,247 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    :root {
+        --primary: #5f72be;
+        --secondary: #9921e8;
+        --error: #e74c3c;
+        --success: #2ecc71;
+        --light: #f8f9fa;
+        --dark: #2c3e50;
+    }
+    
+    .admin-login-container {
+        max-width: 500px;
+        margin: 2rem auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .admin-login-header {
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+    
+    .admin-login-title {
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .admin-login-form {
+        padding: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--dark);
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+        border-color: var(--primary);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(95, 114, 190, 0.2);
+    }
+    
+    .password-container {
+        position: relative;
+    }
+    
+    .toggle-password {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: var(--primary);
+    }
+    
+    .submit-btn {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, var(--secondary) 0%, var(--primary) 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(153, 33, 232, 0.3);
+    }
+    
+    /* Notification styles */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        z-index: 1000;
+        transform: translateX(200%);
+        transition: transform 0.3s ease;
+        max-width: 300px;
+    }
+    
+    .notification.show {
+        transform: translateX(0);
+    }
+    
+    .notification.error {
+        background-color: var(--error);
+    }
+    
+    .notification.success {
+        background-color: var(--success);
+    }
+    
+    .notification.warning {
+        background-color: #f39c12;
+    }
+    
+    @media (max-width: 768px) {
+        .admin-login-container {
+            margin: 1rem;
+            border-radius: 0;
+        }
+    }
+
+    .signup-link {
+        text-align: center;
+        margin-top: 1.5rem;
+        color: #2c3e50;
+    }
+    
+    .signup-link a {
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+    }
+    
+    .signup-link a:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<!-- Notification container -->
+<div id="notification" class="notification" style="display: none;"></div>
+
+<div class="admin-login-container">
+    <div class="admin-login-header">
+        <h1 class="admin-login-title">Admin Portal</h1>
+        <p>Secure administration access</p>
+    </div>
+    
+    <div class="admin-login-form">
+        <form id="adminLoginForm" method="POST" action="#">
+            {% csrf_token %}
+            
+            <!-- Username -->
+            <div class="form-group">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" id="username" name="uname" class="form-control" 
+                       placeholder="Enter admin username" required>
+            </div>
+            
+            <!-- Password -->
+            <div class="form-group">
+                <label for="password" class="form-label">Password</label>
+                <div class="password-container">
+                    <input type="password" id="password" name="pwd" class="form-control" 
+                           placeholder="Enter password" required>
+                    <span class="toggle-password" id="togglePassword">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-btn">Sign In</button>
+        </form>
+        <div class="signup-link">
+            
+            Are you a customer? <a href="{% url 'login' %}">Log in here </a>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.getElementById('adminLoginForm');
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const notification = document.getElementById('notification');
+        
+        // Toggle password visibility
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+        
+        // Show notification function
+        function showNotification(message, type) {
+            notification.textContent = message;
+            notification.className = `notification ${type} show`;
+            notification.style.display = 'block';
+            
+            // Hide after 5 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 300);
+            }, 5000);
+        }
+        
+        // Handle backend messages
+        {% if error == "not" %}
+            showNotification("Username & Password are not matching", "error");
+        {% endif %}
+        
+        {% if error == "pat" or error == "pat2" %}
+            showNotification("Logged in successfully", "success");
+            window.location = '{% url "admin_home" %}';
+        {% endif %}
+        
+        {% if error == "notmember" %}
+            showNotification("Your profile needs updating before accessing this service", "warning");
+            window.location = '{% url "service_home" %}';
+        {% endif %}
+        
+        // Form submission handling
+        loginForm.addEventListener('submit', function(e) {
+            // Client-side validation can be added here
+        });
+    });
+</script>
+
+{% endblock %}

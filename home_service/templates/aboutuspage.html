@@ -1,0 +1,394 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+            --secondary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            --dark-color: #2c3e50;
+            --light-color: #f8f9fa;
+        }
+        
+        /* Global Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .about-hero {
+            padding: 120px 0 80px;
+            background-color: #9921e8;
+            background-image: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .about-hero::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, rgba(106, 17, 203, 0.1) 0%, rgba(37, 117, 252, 0.1) 100%);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            z-index: 0;
+        }
+        
+        .section-title {
+            position: relative;
+            margin-bottom: 2rem;
+            font-weight: 700;
+            color: white;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            bottom: -15px;
+            width: 80px;
+            height: 4px;
+            background: white;
+            border-radius: 2px;
+        }
+        
+        .about-img {
+            border-radius: 12px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+        
+        .feature-icon {
+            font-size: 24px;
+            color: #ffffff;
+            margin-right: 15px;
+        }
+        
+        /* Mission Section */
+        .mission-section {
+            padding: 80px 0;
+            background-color: white;
+        }
+        
+        .mission-section .section-title {
+            color: var(--dark-color);
+        }
+        
+        .mission-section .section-title:after {
+            background: var(--primary-gradient);
+        }
+        
+        .mission-card {
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            height: 100%;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .mission-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(106, 17, 203, 0.15);
+        }
+        
+        .mission-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: #5f72be;
+        }
+        
+        /* Team Section */
+        .team-section {
+            padding: 80px 0;
+            background-color: #f8f9fa;
+        }
+        
+        .team-card {
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .team-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(106, 17, 203, 0.15);
+        }
+        
+        .team-img {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+        
+        .team-social {
+            margin-top: 15px;
+        }
+        
+        .team-social a {
+            color: #5f72be;
+            margin: 0 5px;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .team-social a:hover {
+            color: #9921e8;
+            transform: translateY(-3px);
+        }
+        
+        /* Stats Section */
+        .stats-section {
+            padding: 80px 0;
+            background-color: #9921e8;
+            background-image: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+            color: white;
+        }
+        
+        .stat-item {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        /* Buttons */
+        .btn-primary {
+            background: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            padding: 12px 30px;
+            transition: all 0.3s ease;
+            color: #5f72be;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            background: white;
+            color: #5f72be;
+        }
+        
+        .btn-outline-light {
+            border-width: 2px;
+            font-weight: 500;
+            border-radius: 50px;
+            padding: 12px 30px;
+            transition: all 0.3s ease;
+            color: white;
+            border-color: white;
+        }
+        
+        .btn-outline-light:hover {
+            background-color: rgba(255,255,255,0.2);
+            transform: translateY(-3px);
+            color: white;
+        }
+    </style>
+</head>
+
+<!-- Hero Section -->
+<section class="about-hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <h1 class="display-4 fw-bold mb-4">About FixItNow</h1>
+                <p class="lead mb-5">Your trusted home service solution provider connecting homeowners with reliable professionals since 2020.</p>
+                <a href="{% url 'service' %}" class="btn btn-primary">
+                    <i class="fas fa-tools me-2"></i> Explore Our Services
+                </a>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="FixItNow Team" class="img-fluid about-img">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Our Story Section -->
+<section class="mission-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?ixlib=rb-1.2.1&auto=format&fit=crop&w=600&q=80" alt="Our Story" class="img-fluid about-img">
+            </div>
+            <div class="col-lg-6">
+                <h2 class="section-title">Our Story</h2>
+                <p>FixItNow was founded in 2020 with a simple mission: to make home repairs and maintenance hassle-free for homeowners while providing skilled professionals with a platform to grow their businesses.</p>
+                <p>What started as a small local service has grown into a nationwide platform serving over 50,000 happy customers across the country. We're proud to have created a community where trust and quality service come first.</p>
+                <div class="mt-4">
+                    <a href="#team" class="btn btn-outline-primary">
+                        <i class="fas fa-users me-2"></i> Meet Our Team
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Our Core Values</h2>
+            <p class="lead">The principles that guide everything we do</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="mission-card">
+                    <div class="mission-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Trust & Safety</h3>
+                    <p>Every professional on our platform is thoroughly vetted and background-checked to ensure your peace of mind.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mission-card">
+                    <div class="mission-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Quick Response</h3>
+                    <p>We connect you with available professionals in your area to get help within hours, not days.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="mission-card">
+                    <div class="mission-icon">
+                        <i class="fas fa-hand-holding-usd"></i>
+                    </div>
+                    <h3>Fair Pricing</h3>
+                    <p>Transparent, upfront pricing with no hidden fees. You'll know the cost before booking any service.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Section -->
+<section class="team-section" id="team">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Meet Our Leadership</h2>
+            <p class="lead">The dedicated team behind FixItNow</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card">
+                    <img src="https://randomuser.me/api/portraits/men/32.jpg" class="img-fluid team-img" alt="Team Member">
+                    <div class="p-4">
+                        <h3>John Smith</h3>
+                        <p class="text-muted">Founder & CEO</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card">
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" class="img-fluid team-img" alt="Team Member">
+                    <div class="p-4">
+                        <h3>Sarah Johnson</h3>
+                        <p class="text-muted">COO</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card">
+                    <img src="https://randomuser.me/api/portraits/men/75.jpg" class="img-fluid team-img" alt="Team Member">
+                    <div class="p-4">
+                        <h3>Michael Chen</h3>
+                        <p class="text-muted">CTO</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="team-card">
+                    <img src="https://randomuser.me/api/portraits/women/68.jpg" class="img-fluid team-img" alt="Team Member">
+                    <div class="p-4">
+                        <h3>Emily Wilson</h3>
+                        <p class="text-muted">Customer Success</p>
+                        <div class="team-social">
+                            <a href="#"><i class="fab fa-linkedin"></i></a>
+                            <a href="#"><i class="fab fa-twitter"></i></a>
+                            <a href="#"><i class="fas fa-envelope"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">50,000+</div>
+                    <p>Happy Customers</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">5,000+</div>
+                    <p>Verified Professionals</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">200+</div>
+                    <p>Cities Served</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <p>Customer Support</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to experience hassle-free home services?</h2>
+        <a href="{% url 'service' %}" class="btn btn-primary btn-lg px-5">
+            <i class="fas fa-tools me-2"></i> Book a Service Now
+        </a>
+    </div>
+</section>
+
+{% endblock %}

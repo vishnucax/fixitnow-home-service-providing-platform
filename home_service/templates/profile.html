@@ -1,0 +1,177 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 5% auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        overflow: hidden;
+        padding: 0;
+    }
+    
+    .profile-header {
+        background: linear-gradient(135deg, #9921e8 0%, #5f72be 100%);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+    
+    .profile-title {
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .profile-content {
+        padding: 2rem;
+    }
+    
+    .profile-image-container {
+        text-align: center;
+        margin: -70px auto 1.5rem;
+    }
+    
+    .profile-image {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid white;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+    
+    .profile-details {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+    
+    .detail-item {
+        margin-bottom: 1.5rem;
+    }
+    
+    .detail-label {
+        font-weight: 600;
+        color: #5f72be;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+    
+    .detail-label i {
+        margin-right: 10px;
+        font-size: 1.1rem;
+    }
+    
+    .detail-value {
+        font-size: 1.1rem;
+        color: #2c3e50;
+        padding-left: 30px;
+    }
+    
+    .action-btn {
+        background: linear-gradient(135deg, #9921e8 0%, #5f72be 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 30px;
+        font-weight: 600;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1rem;
+        box-shadow: 0 4px 15px rgba(153, 33, 232, 0.3);
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(153, 33, 232, 0.4);
+        color: white;
+    }
+    
+    .action-btn i {
+        margin-right: 8px;
+    }
+    
+    @media (max-width: 768px) {
+        .profile-details {
+            grid-template-columns: 1fr;
+        }
+        
+        .profile-container {
+            margin: 10% auto;
+            border-radius: 0;
+        }
+        
+        .profile-header {
+            padding: 1.5rem;
+        }
+    }
+</style>
+
+<div class="profile-container">
+    <div class="profile-header">
+        <h1 class="profile-title">My Profile</h1>
+        <p>Manage your account information</p>
+    </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="profile-image-container">
+        <img src="{{pro.image.url}}" class="profile-image" alt="Profile Picture">
+    </div>
+    
+    <div class="profile-content">
+        <div class="profile-details">
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-user"></i> Full Name
+                </div>
+                <div class="detail-value">
+                    {{pro.user.first_name}} {{pro.user.last_name}}
+                </div>
+            </div>
+            
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-envelope"></i> Email
+                </div>
+                <div class="detail-value">
+                    {{pro.user.email}}
+                </div>
+            </div>
+            
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-phone"></i> Contact
+                </div>
+                <div class="detail-value">
+                    {{pro.contact}}
+                </div>
+            </div>
+            
+            <div class="detail-item">
+                <div class="detail-label">
+                    <i class="fas fa-map-marker-alt"></i> Address
+                </div>
+                <div class="detail-value">
+                    {{pro.address}}
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center">
+            <a href="{% url 'edit_profile' %}" class="action-btn">
+                <i class="fas fa-edit"></i> Edit Profile
+            </a>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

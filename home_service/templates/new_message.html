@@ -1,0 +1,197 @@
+{% extends 'admin_navigation.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    .message-container {
+        padding: 25px;
+        background: #f8f9fa;
+        border-radius: 15px;
+    }
+    
+    .message-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .message-title {
+        font-size: 24px;
+        font-weight: 600;
+        color: #2c3e50;
+        margin: 0;
+    }
+    
+    .btn-action {
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: all 0.3s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        margin-left: 10px;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+    }
+    
+    .btn-secondary {
+        background: linear-gradient(315deg, #7b4397 0%, #dc2430 74%);
+    }
+    
+    .btn-action:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .message-table {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+    
+    .message-table thead {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        color: white;
+    }
+    
+    .message-table th {
+        padding: 15px 20px;
+        font-weight: 500;
+    }
+    
+    .message-table td {
+        padding: 12px 20px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f1f1;
+    }
+    
+    .message-table tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .message-table tr:hover {
+        background-color: #f8f9fa;
+    }
+    
+    .message-text {
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    
+    .message-text:hover {
+        white-space: normal;
+        overflow: visible;
+    }
+    
+    .badge-count {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        color: white;
+        border-radius: 50%;
+        padding: 3px 8px;
+        font-size: 12px;
+        margin-left: 5px;
+    }
+    
+    .empty-message {
+        text-align: center;
+        padding: 40px;
+        color: #7f8c8d;
+    }
+    
+    .btn-group {
+        display: flex;
+        gap: 10px;
+    }
+    
+    @media (max-width: 768px) {
+        .message-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .btn-group {
+            width: 100%;
+            flex-direction: column;
+        }
+        
+        .btn-action {
+            width: 100%;
+            justify-content: center;
+            margin-left: 0;
+            margin-top: 10px;
+        }
+        
+        .message-table {
+            display: block;
+            overflow-x: auto;
+        }
+    }
+</style>
+
+<div class="message-container">
+    <div class="message-header">
+        <h2 class="message-title">
+            New Messages <span class="badge-count">{{ ser.count }}</span>
+        </h2>
+        <div class="btn-group">
+            <a href="{% url 'read_message' %}" class="btn-action btn-primary">
+                <i class="fas fa-envelope-open-text"></i> View Read Messages
+            </a>
+            <a href="{% url 'new_message' %}" class="btn-action btn-primary">
+                <i class="fas fa-sync-alt"></i>
+            </a>
+        </div>
+    </div>
+    
+    <div class="message-table">
+        {% if ser %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Message</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in ser %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ i.name }}</td>
+                    <td><a href="mailto:{{ i.email }}" class="text-primary">{{ i.email }}</a></td>
+                    <td class="message-text" title="{{ i.message1 }}">{{ i.message1 }}</td>
+                    <td>
+                        <a href="{% url 'confirm_message' i.id %}" class="btn-action btn-primary">
+                            <i class="fas fa-check-circle"></i> Mark as Read
+                        </a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="empty-message">
+            <i class="fas fa-inbox fa-3x" style="color: #bdc3c7;"></i>
+            <h4>No new messages</h4>
+            <p>Your inbox is currently empty</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,259 @@
+{% extends 'admin_navigation.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    .order-detail-container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .order-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .order-title:after {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: -10px;
+        width: 80px;
+        height: 4px;
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        border-radius: 2px;
+    }
+    
+    .section-header {
+        padding: 1rem;
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        color: white;
+        font-weight: 600;
+        border-radius: 8px 8px 0 0;
+        margin-top: 2rem;
+    }
+    
+    .detail-card {
+        padding: 1.5rem;
+        border: 1px solid rgba(0,0,0,0.05);
+        border-radius: 0 0 8px 8px;
+    }
+    
+    .detail-row {
+        display: flex;
+        margin-bottom: 1rem;
+    }
+    
+    .detail-label {
+        font-weight: 600;
+        color: #2c3e50;
+        min-width: 180px;
+    }
+    
+    .detail-value {
+        color: #555;
+    }
+    
+    .user-image {
+        border-radius: 8px;
+        border: 3px solid rgba(106, 17, 203, 0.1);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+    
+    .id-card {
+        max-width: 100%;
+        border-radius: 8px;
+        margin-top: 1rem;
+    }
+    
+    .payment-status {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        border-radius: 50px;
+        font-weight: 600;
+        margin-top: 1rem;
+    }
+    
+    .paid {
+        background: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+    }
+    
+    .unpaid {
+        background: rgba(220, 53, 69, 0.1);
+        color: #dc3545;
+    }
+    
+    .action-btn {
+        background: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        margin-top: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    @media (max-width: 768px) {
+        .detail-row {
+            flex-direction: column;
+        }
+        
+        .detail-label {
+            margin-bottom: 0.5rem;
+        }
+    }
+</style>
+
+<div class="order-detail-container">
+    <h1 class="order-title">Order Details</h1>
+    
+    <!-- Payment Status Section -->
+    <div class="section-header">
+        Payment Status
+    </div>
+    <div class="detail-card">
+        {% if pro.payment_status == 'Paid' %}
+        <div class="payment-status paid">
+            <i class="fas fa-check-circle"></i> Paid - ₹{{pro.amount}}
+        </div>
+        {% else %}
+        <div class="payment-status unpaid">
+            <i class="fas fa-times-circle"></i> Not Paid
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Service Professional Section -->
+    <div class="section-header">
+        Service Professional Details
+    </div>
+    <div class="detail-card">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="detail-row">
+                    <span class="detail-label">Full Name:</span>
+                    <span class="detail-value">{{pro.service.user.first_name}} {{pro.service.user.last_name}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Contact:</span>
+                    <span class="detail-value">{{pro.service.contact}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">{{pro.service.user.email}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Date of Join:</span>
+                    <span class="detail-value">{{pro.service.doj}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Date of Birth:</span>
+                    <span class="detail-value">{{pro.service.dob}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Address:</span>
+                    <span class="detail-value">{{pro.service.address}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Service:</span>
+                    <span class="detail-value">{{pro.service.service_name}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Experience:</span>
+                    <span class="detail-value">{{pro.service.experience}} year(s)</span>
+                </div>
+            </div>
+            <div class="col-md-6 text-center">
+                <img src="{{pro.service.image.url}}" class="user-image" style="width:200px; height:200px; object-fit:cover">
+                <div class="mt-3">
+                    <img src="{{pro.service.id_card.url}}" class="id-card" style="max-height: 150px;">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Order Details Section -->
+    <div class="section-header">
+        Order Details
+    </div>
+    <div class="detail-card">
+        <div class="detail-row">
+            <span class="detail-label">Booking Date:</span>
+            <span class="detail-value">{{pro.book_date}}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Booking Days:</span>
+            <span class="detail-value">{{pro.book_days}} days</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Booking Hours:</span>
+            <span class="detail-value">{{pro.book_hours}} hours</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Order Status:</span>
+            <span class="detail-value">
+                {% if pro.status.status == 'Accept' %}
+                <span class="badge bg-success">{{pro.status.status}}</span>
+                {% else %}
+                <span class="badge bg-warning text-dark">{{pro.status.status}}</span>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    
+    <!-- Customer Details Section -->
+    <div class="section-header">
+        Customer Details
+    </div>
+    <div class="detail-card">
+        <div class="row">
+            <div class="col-md-7">
+                <div class="detail-row">
+                    <span class="detail-label">Full Name:</span>
+                    <span class="detail-value">{{pro.customer.user.first_name}} {{pro.customer.user.last_name}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Contact:</span>
+                    <span class="detail-value">{{pro.customer.contact}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value">{{pro.customer.user.email}}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Address:</span>
+                    <span class="detail-value">{{pro.customer.address}}</span>
+                </div>
+            </div>
+            <div class="col-md-5 text-center">
+                <img src="{{pro.customer.image.url}}" class="user-image" style="width:200px; height:200px; object-fit:cover">
+            </div>
+        </div>
+    </div>
+    
+    {% if pro.status.status != 'Accept' %}
+    <div class="text-center">
+        <a href="{% url 'order_status' pro.id %}" class="action-btn">
+            <i class="fas fa-tasks"></i> Take Action
+        </a>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

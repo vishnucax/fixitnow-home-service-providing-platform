@@ -1,0 +1,496 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    :root {
+        --primary: #9921e8;
+        --secondary: #5f72be;
+        --white: #ffffff;
+        --light: #f8f9fa;
+        --dark: #343a40;
+        --danger: #dc3545;
+        --success: #28a745;
+    }
+
+    body {
+        background: linear-gradient(315deg, var(--primary) 0%, var(--secondary) 74%);
+        min-height: 100vh;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding: 2rem 0;
+    }
+
+    .edit-container {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+        margin-top: 5%;
+        margin-bottom: 5%;
+    }
+
+    .form-header {
+        color: var(--dark);
+        font-weight: 700;
+        margin-bottom: 2rem;
+        position: relative;
+        padding-bottom: 10px;
+    }
+
+    .form-header:after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(315deg, var(--primary) 0%, var(--secondary) 74%);
+        border-radius: 2px;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        padding: 12px 15px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 0.2rem rgba(153, 33, 232, 0.25);
+    }
+
+    .form-group label {
+        font-weight: 600;
+        color: var(--dark);
+        margin-bottom: 8px;
+    }
+
+    /* Enhanced Dropdown Styling */
+    .custom-select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%235f72be' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 16px 12px;
+        padding-right: 2.5rem;
+    }
+
+    .preview-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 2px solid var(--light);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .id-preview {
+        width: 100%;
+        max-height: 120px;
+        object-fit: contain;
+        border-radius: 8px;
+        border: 2px solid var(--light);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-update {
+        background: linear-gradient(315deg, var(--primary) 0%, var(--secondary) 74%);
+        color: var(--white);
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        margin-top: 1rem;
+    }
+
+    .btn-update:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .is-invalid {
+        border-color: var(--danger) !important;
+    }
+
+    .invalid-feedback {
+        color: var(--danger);
+        font-size: 0.85rem;
+        margin-top: 5px;
+    }
+
+    .alert-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    @media (max-width: 768px) {
+        .edit-container {
+            margin-top: 15%;
+            padding: 1.5rem;
+        }
+        
+        .preview-image {
+            width: 80px;
+            height: 80px;
+        }
+    }
+</style>
+
+<div class="container edit-container">
+    {% if messages %}
+    <div class="alert-container">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="form-header">Edit Profile</h2>
+            <form method="post" action="" enctype="multipart/form-data" id="profileForm">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="firstName">First Name</label>
+                        <input type="text" class="form-control" value="{{pro.user.first_name}}" name="fname" id="firstName" 
+                               pattern="[A-Za-z ]+" title="Only letters allowed" required>
+                        <div class="invalid-feedback">Please provide a valid first name (letters only)</div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" class="form-control" name="lname" value="{{pro.user.last_name}}" id="lastName" 
+                               pattern="[A-Za-z ]+" title="Only letters allowed" required>
+                        <div class="invalid-feedback">Please provide a valid last name (letters only)</div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control" name="uname" value="{{pro.user.username}}" id="username" readonly>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="email">Email Address</label>
+                        <input type="email" class="form-control" name="email" value="{{pro.user.email}}" id="email" 
+                               pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" required>
+                        <div class="invalid-feedback">Please provide a valid email address</div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="address">Address</label>
+                        <input type="text" class="form-control" name="address" value="{{pro.address}}" id="address" required>
+                        <div class="invalid-feedback">Please provide your address</div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-12">
+                        <label for="contact">Contact</label>
+                        <input type="tel" class="form-control" id="contact" value="{{pro.contact}}" name="contact" 
+                               pattern="[0-9]{10}" title="10 digit phone number" required>
+                        <div class="invalid-feedback">Please provide a valid 10-digit phone number</div>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group col-md-8">
+                        <label for="profileImage">Profile Image</label>
+                        <input type="file" class="form-control" id="profileImage" name="image" accept="image/*">
+                    </div>
+                    <div class="form-group col-md-4 text-center">
+                        <img src="{{pro.image.url}}" class="preview-image" id="profilePreview">
+                    </div>
+                </div>
+        </div>
+        
+        <div class="col-md-6">
+            <h2 class="form-header">Edit Service</h2>
+            
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="experience">Work Experience (years)</label>
+                    <input type="number" class="form-control" id="experience" name="exp" value="{{pro.experience}}" min="0" max="50" required>
+                    <div class="invalid-feedback">Please provide valid experience (0-50 years)</div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="city">Select City</label>
+                    <select class="form-control custom-select" name="city" id="city" required>
+                        {% for i in city %}
+                            <option value="{{i.city}}" {% if pro.city.city == i.city %}selected{% endif %}>{{i.city}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" class="form-control" id="dob" name="dob" value="{{pro.dob|date:'Y-m-d'}}" required>
+                    <div class="invalid-feedback" id="dobError">You must be at least 18 years old</div>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="idType">Type of ID</label>
+                    <select class="form-control custom-select" name="card" id="idType" required>
+                        {% for i in car %}
+                            <option value="{{i.card}}" {% if pro.id_type == i.card %}selected{% endif %}>{{i.card}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="service">Select Service</label>
+                    <select class="form-control custom-select" name="service" id="service" required>
+                        {% for i in ser %}
+                            <option value="{{i.category}}" {% if pro.service_name == i.category %}selected{% endif %}>{{i.category}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group col-md-7">
+                    <label for="idProof">ID Proof Image</label>
+                    <input type="file" class="form-control" id="idProof" name="image1" accept="image/*">
+                </div>
+                <div class="form-group col-md-5 text-center">
+                    {% if pro.service_name %}
+                        <img src="{{pro.id_card.url}}" class="id-preview" id="idPreview">
+                    {% else %}
+                        <div class="id-preview bg-light d-flex align-items-center justify-content-center">
+                            <span class="text-muted">No ID uploaded</span>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-update" id="submitBtn">Update Profile</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form validation
+        const form = document.getElementById('profileForm');
+        const firstName = document.getElementById('firstName');
+        const lastName = document.getElementById('lastName');
+        const email = document.getElementById('email');
+        const contact = document.getElementById('contact');
+        const dobInput = document.getElementById('dob');
+        const dobError = document.getElementById('dobError');
+        const submitBtn = document.getElementById('submitBtn');
+        
+        // Name validation (letters only)
+        function validateName(name) {
+            return /^[A-Za-z ]+$/.test(name);
+        }
+        
+        // Email validation
+        function validateEmail(email) {
+            return /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i.test(email);
+        }
+        
+        // Phone validation (10 digits)
+        function validatePhone(phone) {
+            return /^[0-9]{10}$/.test(phone);
+        }
+        
+        // Age validation
+        function validateAge() {
+            if (!dobInput.value) return false;
+            
+            const dob = new Date(dobInput.value);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            
+            if (age < 18) {
+                dobInput.classList.add('is-invalid');
+                dobError.style.display = 'block';
+                submitBtn.disabled = true;
+                return false;
+            } else {
+                dobInput.classList.remove('is-invalid');
+                dobError.style.display = 'none';
+                submitBtn.disabled = false;
+                return true;
+            }
+        }
+        
+        // Validate on input change
+        firstName.addEventListener('input', function() {
+            if (!validateName(this.value)) {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+        
+        lastName.addEventListener('input', function() {
+            if (!validateName(this.value)) {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+        
+        email.addEventListener('input', function() {
+            if (!validateEmail(this.value)) {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+        
+        contact.addEventListener('input', function() {
+            if (!validatePhone(this.value)) {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+        });
+        
+        dobInput.addEventListener('change', validateAge);
+        
+        // Initial validation
+        if (dobInput.value) {
+            validateAge();
+        }
+        
+        // Form submission validation
+        form.addEventListener('submit', function(e) {
+            let isValid = true;
+            
+            // Validate all required fields
+            const requiredInputs = form.querySelectorAll('[required]');
+            requiredInputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.classList.add('is-invalid');
+                    isValid = false;
+                }
+            });
+            
+            // Validate names
+            if (!validateName(firstName.value)) {
+                firstName.classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            if (!validateName(lastName.value)) {
+                lastName.classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            // Validate email
+            if (!validateEmail(email.value)) {
+                email.classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            // Validate phone
+            if (!validatePhone(contact.value)) {
+                contact.classList.add('is-invalid');
+                isValid = false;
+            }
+            
+            // Validate age
+            if (!validateAge()) {
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                e.preventDefault();
+                // Scroll to first invalid field
+                const firstInvalid = form.querySelector('.is-invalid');
+                if (firstInvalid) {
+                    firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }
+        });
+        
+        // Image preview functionality
+        const profileImageInput = document.getElementById('profileImage');
+        const profilePreview = document.getElementById('profilePreview');
+        const idProofInput = document.getElementById('idProof');
+        const idPreview = document.getElementById('idPreview');
+        
+        profileImageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    profilePreview.src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        if (idProofInput && idPreview) {
+            idProofInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        idPreview.src = e.target.result;
+                        idPreview.style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+    });
+
+    // Auto-dismiss alerts after 5 seconds
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            const bootstrapAlert = new bootstrap.Alert(alert);
+            bootstrapAlert.close();
+        });
+    }, 5000);
+</script>
+
+{% if terror %}
+<script>
+    // Show success message and redirect
+    Swal.fire({
+        title: 'Success!',
+        text: 'Profile updated successfully',
+        icon: 'success',
+        confirmButtonText: 'OK',
+        timer: 3000,
+        timerProgressBar: true
+    }).then(() => {
+        window.location.href = "{% url 'service_profile' %}";
+    });
+</script>
+{% endif %}
+
+{% endblock %}

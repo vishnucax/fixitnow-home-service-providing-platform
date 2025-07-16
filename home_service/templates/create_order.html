@@ -1,0 +1,204 @@
+{% extends 'index.html' %}
+{% load static %}
+{% block body %}
+
+<style>
+    :root {
+        --primary-gradient: linear-gradient(315deg, #9921e8 0%, #5f72be 74%);
+        --secondary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        --dark-color: #2c3e50;
+        --light-color: #f8f9fa;
+    }
+    
+    .payment-container {
+        max-width: 600px;
+        margin: 5% auto;
+        background: white;
+        border-radius: 16px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        overflow: hidden;
+        padding: 0;
+    }
+    
+    .payment-header {
+        background: linear-gradient(135deg, #9921e8 0%, #5f72be 100%);
+        padding: 2rem;
+        text-align: center;
+        color: white;
+    }
+    
+    .payment-title {
+        font-weight: 700;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .payment-content {
+        padding: 2rem;
+        text-align: center;
+    }
+    
+    .payment-description {
+        color: #6c757d;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+    }
+    
+    .payment-amount {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #9921e8;
+        margin: 1rem 0;
+    }
+    
+    .payment-details {
+        background: rgba(153, 33, 232, 0.05);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        text-align: left;
+    }
+    
+    .detail-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.8rem;
+    }
+    
+    .detail-label {
+        font-weight: 600;
+        color: var(--dark-color);
+    }
+    
+    .detail-value {
+        color: #495057;
+    }
+    
+    .btn-payment {
+        background: linear-gradient(135deg, #9921e8 0%, #5f72be 100%);
+        color: white;
+        border: none;
+        border-radius: 50px;
+        padding: 12px 30px;
+        font-weight: 600;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 1rem;
+        box-shadow: 0 5px 15px rgba(153, 33, 232, 0.3);
+    }
+    
+    .btn-payment:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(153, 33, 232, 0.4);
+    }
+    
+    .payment-footer {
+        margin-top: 2rem;
+        font-size: 0.9rem;
+        color: #6c757d;
+    }
+    
+    .secure-badge {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(40, 167, 69, 0.1);
+        color: #28a745;
+        padding: 5px 15px;
+        border-radius: 50px;
+        margin-top: 1rem;
+    }
+    
+    .secure-badge i {
+        margin-right: 8px;
+    }
+</style>
+
+<div class="payment-container">
+    <div class="payment-header">
+        <h1 class="payment-title">Complete Your Payment</h1>
+        <p>Secure and easy payment process</p>
+    </div>
+    
+    <div class="payment-content">
+        <p class="payment-description">
+            Thank you for choosing our service. Please complete your payment to confirm your booking.
+        </p>
+        
+       
+        
+        <div class="payment-details">
+            <div class="detail-item">
+                <span class="detail-label">Service:</span>
+                <span class="detail-value">{{ service.category }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Order ID:</span>
+                <span class="detail-value">#{{ razorpay_order_id }}</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">Payment Method:</span>
+                <span class="detail-value">Razorpay</span>
+            </div>
+        </div>
+        
+        <button id="pay-btn" class="btn-payment">
+            <i class="fas fa-lock me-2"></i> Pay Securely
+        </button>
+        
+        <div class="secure-badge">
+            <i class="fas fa-shield-alt"></i>
+            <span>100% Secure Payment</span>
+        </div>
+        
+        <div class="payment-footer">
+            <p>You'll be redirected to Razorpay's secure payment page to complete your transaction.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Razorpay's Javascript code. -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        // Enter the Key ID generated from the Dashboard
+        key: "{{ razorpay_merchant_key }}", 
+        
+        // Amount is in currency subunits.
+        // Default currency is INR. Hence, 
+        // 50000 refers to 50000 paise
+        amount: "{{ razorpay_amount }}", 
+        currency: "{{ currency }}",
+        
+        // Your/store name.
+        name: "FixItNow", 
+        
+        // Pass the `id` obtained in the response of Step 1
+        order_id: "{{ razorpay_order_id }}", 
+        callback_url: "{{ callback_url }}",
+        
+        // Additional options to match theme
+        theme: {
+            color: "#9921e8"
+        },
+        prefill: {
+            name: "{{ user.first_name }} {{ user.last_name }}",
+            email: "{{ user.email }}",
+            contact: "{{ pro.contact }}"
+        },
+        notes: {
+            service: "{{ service.category }}"
+        }
+    };
+    
+    // initialise razorpay with the options.
+    var rzp1 = new Razorpay(options);
+    
+    // add event listener to the payment button.
+    document.getElementById("pay-btn").onclick = function (e) {
+        rzp1.open();
+        e.preventDefault();
+    };
+</script>
+
+{% endblock %}
