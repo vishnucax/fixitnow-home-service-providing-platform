@@ -1,1 +1,1 @@
-"# FixItNow-Home-service-providing-platform" 
+![FixItNow Logo](logo.png)
